@@ -16,7 +16,8 @@
     "bootstrap": "emdash init && emdash seed",
     "seed": "emdash seed",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "lint": "oxlint src"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.7",
@@ -39,6 +40,7 @@
     "@storybook/react-vite": "^10.3.6",
     "@vitest/browser-playwright": "^4.1.5",
     "@vitest/coverage-v8": "^4.1.5",
+    "oxlint": "^1.62.0",
     "playwright": "^1.59.1",
     "storybook": "^10.3.6",
     "vitest": "^4.1.5",
