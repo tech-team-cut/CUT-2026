@@ -5,6 +5,11 @@ import { defineConfig } from "astro/config";
 import emdash from "emdash/astro";
 
 export default defineConfig({
+	vite: {
+		optimizeDeps: {
+			exclude: ['emdash']
+		}
+	},
 	output: "server",
 	adapter: cloudflare(),
 	image: {
