@@ -24,6 +24,7 @@
 			"id": "bc84148517ce486fad73651a4772e0a3",
 		},
 	],
+	"workers_dev": true,
 	// Worker Loader for plugin sandboxing
 	"worker_loaders": [
 		{
