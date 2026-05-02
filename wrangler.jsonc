@@ -18,6 +18,12 @@
 			"bucket_name": "cut-r2",
 		},
 	],
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "bc84148517ce486fad73651a4772e0a3",
+		},
+	],
 	// Worker Loader for plugin sandboxing
 	"worker_loaders": [
 		{
