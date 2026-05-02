@@ -17,13 +17,8 @@ jobs:
 
       - run: npm ci
 
-      - name: Build Storybook
-        run: npm run build-storybook
-
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Run a11y tests
-        run: npx test-storybook --url file://$(pwd)/storybook-static
-        env:
-          STORYBOOK_A11Y_DISABLE: "false"
+      - name: Run Storybook tests
+        run: npx vitest run
