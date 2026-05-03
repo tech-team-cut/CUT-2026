@@ -14,7 +14,7 @@
     "deploy": "astro build && wrangler deploy",
     "typecheck": "astro check",
     "bootstrap": "emdash init && emdash seed",
-    "seed": "emdash seed",
+    "seed": "emdash seed seed/seed.json --database \"$(find .wrangler/state/v3/d1 -name '*.sqlite' ! -name 'metadata*' 2>/dev/null | head -1 || echo data.db)\"",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint": "oxlint src"
