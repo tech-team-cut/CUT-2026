@@ -5,6 +5,58 @@
 
 import type { ContentBylineCredit, PortableTextBlock } from "emdash";
 
+export interface Acervo {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  description?: string;
+  content?: PortableTextBlock[];
+  external_url?: string;
+  collection_type?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+export interface Licenciatura {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  order?: number;
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  excerpt?: string;
+  content?: PortableTextBlock[];
+  duration?: string;
+  modality?: string;
+  degree_plan_url?: string;
+  active?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+export interface Maestria {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  excerpt?: string;
+  content?: PortableTextBlock[];
+  duration?: string;
+  modality?: string;
+  degree_plan_url?: string;
+  active?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
 export interface Page {
   id: string;
   slug: string | null;
@@ -25,6 +77,7 @@ export interface Post {
   featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
   content?: PortableTextBlock[];
   excerpt?: string;
+  fecha_publicacion?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -33,6 +86,9 @@ export interface Post {
 
 declare module "emdash" {
   interface EmDashCollections {
+    library_collections: Acervo;
+    licenciaturas: Licenciatura;
+    maestrias: Maestria;
     pages: Page;
     posts: Post;
   }
