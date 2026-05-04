@@ -1,0 +1,244 @@
+---
+import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
+import { PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import { CurriculumGrid } from "../../components/CurriculumGrid";
+import { SectionHeader } from "../../components/SectionHeader";
+import { Eyebrow } from "../../components/Eyebrow";
+import { Button } from "../../components/Button";
+import { ImagePlaceholder } from "../../components/ImagePlaceholder";
+import { StatCard } from "../../components/StatCard";
+
+const slug = decodeSlug(Astro.params.slug);
+
+if (!slug) {
+	return Astro.redirect("/404");
+}
+
+const { entry: program, cacheHint } = await getEmDashEntry("licenciaturas", slug);
+
+if (!program) {
+	return Astro.redirect("/404");
+}
+
+Astro.cache.set(cacheHint);
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const seo = getSeoMeta(program, {
+	siteTitle,
+	siteUrl: Astro.url.origin,
+	path: `/licenciaturas/${slug}`,
+});
+
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	canonical={seo.canonical}
+	content={{ collection: "licenciaturas", id: program.id, slug }}
+>
+	<div class="program-detail">
+		<!-- Hero Section -->
+		<section class="hero">
+			<div class="container">
+				<div class="hero-grid">
+					<div class="hero-main">
+						<Eyebrow>Programa Académico · Licenciatura</Eyebrow>
+						<h1 class="t-display-lg" style="margin-top: 1rem;" {...program.edit.title}>
+							{program.data.title}
+						</h1>
+						{program.data.excerpt && (
+							<p class="t-body-lg hero-lede" style="margin-top: 1.5rem;" {...program.edit.excerpt}>
+								{program.data.excerpt}
+							</p>
+						)}
+						<div class="hero-cta">
+							<Button variant="primary" href="/estudio/convocatoria">
+								Solicitar información
+							</Button>
+							<Button variant="outline" href="#plan-estudios">
+								Ver plan de estudios
+							</Button>
+						</div>
+					</div>
+
+					<aside class="hero-aside">
+						<div class="stat-row">
+							<StatCard 
+								value={program.data.duration?.split(' ')[0] || '9'} 
+								suffix="SEM" 
+								label="Duración" 
+							/>
+							<StatCard 
+								value="Pres." 
+								label="Modalidad" 
+							/>
+							<StatCard 
+								value="SEP" 
+								label="RVOE" 
+							/>
+						</div>
+						
+						<div class="hero-image-wrap" style="margin-top: auto;">
+							<ImagePlaceholder 
+								context="CAMPUS" 
+								ratio="16:9" 
+								filename="fachada-principal.jpg"
+								style={{ height: '180px' }}
+							/>
+						</div>
+					</aside>
+				</div>
+			</div>
+		</section>
+
+		<!-- Overview Section -->
+		<section class="section">
+			<div class="container">
+				<div class="program-content-grid">
+					<div class="content-main">
+						<SectionHeader 
+							num="— 01"
+							title="Sobre el programa."
+							description="Formación académica con un enfoque humanista y compromiso social para el desarrollo regional."
+						/>
+						
+						<div class="prose" {...program.edit.content}>
+							<PortableText value={program.data.content} />
+						</div>
+
+						<blockquote class="pull-q" style="margin-top: 3rem;">
+							"Nuestra misión es formar líderes capaces de transformar la administración pública con ética y eficiencia."
+						</blockquote>
+					</div>
+
+					<div class="content-sidebar">
+						<div class="sidebar-card">
+							<h3 class="t-headline-sm">¿Por qué estudiar {program.data.title} en CUT?</h3>
+							<ul class="benefit-list">
+								<li>Docentes con amplia experiencia en el sector.</li>
+								<li>Plan de estudios actualizado y pertinente.</li>
+								<li>Vinculación con organismos gubernamentales.</li>
+								<li>Excelencia académica a costos accesibles.</li>
+							</ul>
+							<Button variant="primary" href="/estudio/convocatoria" className="w-full">
+								Iniciar Proceso
+							</Button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Curriculum Section -->
+		{(program.data as any).curriculum?.semesters && (
+			<section id="plan-estudios" class="section section--low">
+				<div class="container">
+					<SectionHeader 
+						num="— 02"
+						title="Plan de estudios."
+						description="Mapa curricular organizado por semestres, diseñado para una formación integral y progresiva."
+					/>
+					<CurriculumGrid curriculum={program.data.curriculum as any} />
+				</div>
+			</section>
+		)}
+
+		<!-- CTA Section -->
+		<section class="cta-section">
+			<div class="container">
+				<div class="cta-grid">
+					<div class="cta-content">
+						<Eyebrow dark>Inscripciones Abiertas</Eyebrow>
+						<h2 class="cta-title">Únete a nuestra <em>comunidad académica</em></h2>
+						<p class="cta-copy">
+							Estamos listos para recibirte. Inicia hoy tu camino profesional en una institución comprometida con tu futuro.
+						</p>
+						<Button variant="primary" href="/estudio/admision">
+							Ver requisitos de admisión
+						</Button>
+					</div>
+					<div class="key-dates">
+						<div class="key-date">
+							<div class="d">25<span>JUN</span></div>
+							<div>
+								<div class="kl">Examen de Admisión</div>
+								<div class="kd">Sede Central · 09:00 hrs</div>
+							</div>
+						</div>
+						<div class="key-date">
+							<div class="d">15<span>JUL</span></div>
+							<div>
+								<div class="kl">Resultados</div>
+								<div class="kd">Consulta en línea o en campus</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</Base>
+
+<style>
+	.program-content-grid {
+		display: grid;
+		grid-template-columns: 1fr 340px;
+		gap: 5rem;
+		align-items: start;
+	}
+
+	.benefit-list {
+		margin: 1.5rem 0 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.benefit-list li {
+		font-size: 0.9375rem;
+		color: var(--tertiary);
+		padding-left: 1.5rem;
+		position: relative;
+	}
+
+	.benefit-list li::before {
+		content: "•";
+		color: var(--primary);
+		position: absolute;
+		left: 0;
+		font-weight: bold;
+	}
+
+	.sidebar-card {
+		background: var(--surface-bright);
+		border: 1px solid var(--outline-soft);
+		padding: 2.5rem 2rem;
+		position: sticky;
+		top: 100px;
+	}
+
+	.w-full {
+		width: 100%;
+		justify-content: center;
+	}
+
+	@media (max-width: 1024px) {
+		.program-content-grid {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+		}
+		
+		.content-sidebar {
+			order: -1;
+		}
+
+		.sidebar-card {
+			position: static;
+		}
+	}
+</style>
+
