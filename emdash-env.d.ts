@@ -33,6 +33,7 @@ export interface Licenciatura {
   modality?: string;
   degree_plan_url?: string;
   active?: boolean;
+  curriculum?: unknown;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -51,6 +52,9 @@ export interface Maestria {
   modality?: string;
   degree_plan_url?: string;
   active?: boolean;
+  order?: number;
+  curriculum?: unknown;
+  characteristics?: unknown;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;

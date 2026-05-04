@@ -123,6 +123,11 @@
 					"slug": "active",
 					"label": "Activo",
 					"type": "boolean"
+				},
+				{
+					"slug": "curriculum",
+					"label": "Plan de Estudios (JSON)",
+					"type": "json"
 				}
 			]
 		},
@@ -298,6 +303,42 @@
 					"duration": "9 semestres",
 					"modality": "Presencial",
 					"active": true,
+					"curriculum": {
+						"semesters": [
+							{
+								"label": "Primer Semestre",
+								"subjects": ["Introducción a la AP", "Derecho Constitucional", "Microeconomía", "Teoría Política"]
+							},
+							{
+								"label": "Segundo Semestre",
+								"subjects": ["Macroeconomía", "Derecho Administrativo", "Estadística Social", "Sociología Urbana"]
+							},
+							{
+								"label": "Tercer Semestre",
+								"subjects": ["Políticas Públicas I", "Hacienda Pública", "Gestión Local", "Métodos Cualitativos"]
+							},
+							{
+								"label": "Cuarto Semestre",
+								"subjects": ["Ética Pública", "Derecho Laboral", "Comunicación Política", "Sistemas Electorales"]
+							},
+							{
+								"label": "Quinto Semestre",
+								"subjects": ["Políticas Públicas II", "Presupuesto por Resultados", "Gobierno Electrónico", "Derecho Humano"]
+							},
+							{
+								"label": "Sexto Semestre",
+								"subjects": ["Gestión del Capital Humano", "Evaluación de Programas", "Transparencia y Acceso", "Desarrollo Sustentable"]
+							},
+							{
+								"label": "Séptimo Semestre",
+								"subjects": ["Auditoría Gubernamental", "Seminario de Tesis I", "Planeación del Desarrollo", "Gestión de Riesgos"]
+							},
+							{
+								"label": "Octavo Semestre",
+								"subjects": ["Seminario de Tesis II", "Práctica Profesional", "Liderazgo Público", "Taller de Titulación"]
+							}
+						]
+					},
 					"content": [
 						{
 							"_type": "block",
@@ -325,7 +366,7 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Contaduría forma especialistas en contabilidad, auditoría, finanzas y fiscalidad con capacidad de gestión financiera en empresas e instituciones." }]
+							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Contaduría forma especialistas en contabilidad, auditoría, finanzas and fiscalidad con capacidad de gestión financiera en empresas e instituciones." }]
 						}
 					]
 				},
