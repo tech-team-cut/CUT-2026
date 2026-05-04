@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { UtilityBar } from './UtilityBar'
+import { UtilityBar } from './index'
 
 const meta = {
   title: 'CUT/UtilityBar',

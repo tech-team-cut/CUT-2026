@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { NavItem } from './NavItem'
+import { NavItem } from './index'
 
 const meta = {
   title: 'CUT/NavItem',
@@ -29,6 +29,9 @@ export const Active: Story = {
 }
 
 export const NavBar: Story = {
+  args: {
+    children: 'Inicio',
+  },
   decorators: [
     (Story) => (
       <div style={{ background: '#fff', padding: '1rem 2rem', borderBottom: '1px solid #d8dadc' }}>

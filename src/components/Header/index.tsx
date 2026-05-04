@@ -1,7 +1,7 @@
 import React from 'react'
-import { Brand } from './Brand'
-import { NavItem } from './NavItem'
-import { UtilityBar } from './UtilityBar'
+import { Brand } from '../Brand'
+import { NavItem } from '../NavItem'
+import { UtilityBar } from '../UtilityBar'
 
 interface NavLink {
   label: string

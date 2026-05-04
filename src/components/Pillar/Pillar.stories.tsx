@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
-import { Pillar } from './Pillar'
+import { Pillar } from './index'
 
 const meta = {
   title: 'CUT/Pillar',
@@ -31,6 +31,11 @@ export const Mision: Story = {
 }
 
 export const PillarList: Story = {
+  args: {
+    label: '— Visión',
+    heading: 'Excelencia',
+    body: 'Test',
+  },
   render: () => (
     <div style={{ maxWidth: '600px' }}>
       <Pillar

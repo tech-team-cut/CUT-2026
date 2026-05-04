@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
-import { KeyDate } from './KeyDate'
+import { KeyDate } from './index'
 
 const meta = {
   title: 'CUT/KeyDate',
@@ -31,6 +31,11 @@ export const Default: Story = {
 }
 
 export const KeyDateList: Story = {
+  args: {
+    day: "25",
+    month: "Junio",
+    label: "Examen de Admisión",
+  },
   render: () => (
     <div style={{ background: '#0f172a', padding: '2rem', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <KeyDate
