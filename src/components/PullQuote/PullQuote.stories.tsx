@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
-import { PullQuote } from './PullQuote'
+import { PullQuote } from './index'
 
 const meta = {
   title: 'CUT/PullQuote',

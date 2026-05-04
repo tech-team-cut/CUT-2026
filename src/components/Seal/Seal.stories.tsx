@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Seal } from './Seal'
+import { Seal } from './index'
 
 const meta = {
   title: 'CUT/Seal',

@@ -1,7 +1,7 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { fn } from 'storybook/test'
-import { Button } from './Button'
+import { Button } from './index'
 
 const meta = {
   title: 'CUT/Button',

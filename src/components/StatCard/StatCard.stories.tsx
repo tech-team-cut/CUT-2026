@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { StatCard } from './StatCard'
+import { StatCard } from './index'
 
 const meta = {
   title: 'CUT/StatCard',

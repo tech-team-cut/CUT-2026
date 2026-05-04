@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { ImagePlaceholder } from './ImagePlaceholder'
+import { ImagePlaceholder } from './index'
 
 const meta = {
   title: 'CUT/ImagePlaceholder',

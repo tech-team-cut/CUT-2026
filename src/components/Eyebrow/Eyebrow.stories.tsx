@@ -1,6 +1,6 @@
 import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { Eyebrow } from './Eyebrow'
+import { Eyebrow } from './index'
 
 const meta = {
   title: 'CUT/Eyebrow',

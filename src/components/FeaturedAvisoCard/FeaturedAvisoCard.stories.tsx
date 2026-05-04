@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { FeaturedAvisoCard } from './FeaturedAvisoCard'
+import { FeaturedAvisoCard } from './index'
 
 const meta = {
   title: 'CUT/FeaturedAvisoCard',

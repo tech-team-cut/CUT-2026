@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { NewsCard } from './NewsCard'
+import { NewsCard } from './index'
 
 const meta = {
   title: 'CUT/NewsCard',
