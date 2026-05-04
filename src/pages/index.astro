@@ -1,47 +1,263 @@
 ---
-import { getEmDashCollection, getSiteSettings } from "emdash";
-import { Image } from "emdash/ui";
-import Base from "../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { getEmDashCollection, getSiteSettings } from "emdash"
+import Base from "../layouts/Base.astro"
+import { resolveStarterSiteIdentity } from "../utils/site-identity"
+import { SectionHeader } from "../components/SectionHeader"
+import { StatCard } from "../components/StatCard"
+import { FeaturedAvisoCard } from "../components/FeaturedAvisoCard"
+import { ProgramCard } from "../components/ProgramCard"
+import { NewsCard } from "../components/NewsCard"
+import { Pillar } from "../components/Pillar"
+import { PullQuote } from "../components/PullQuote"
+import { KeyDate } from "../components/KeyDate"
+import { ImagePlaceholder } from "../components/ImagePlaceholder"
+import { Button } from "../components/Button"
+import { Eyebrow } from "../components/Eyebrow"
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
-	orderBy: { published_at: "desc" },
-});
-const { siteTitle, siteTagline } = resolveStarterSiteIdentity(await getSiteSettings());
-Astro.cache.set(cacheHint);
+const [
+  { entries: licenciaturas, cacheHint: ch1 },
+  { entries: maestrias, cacheHint: ch2 },
+  { entries: posts, cacheHint: ch3 },
+] = await Promise.all([
+  getEmDashCollection("licenciaturas", { orderBy: { order: "asc" } }),
+  getEmDashCollection("maestrias", {}),
+  getEmDashCollection("posts", { orderBy: { published_at: "desc" } }),
+])
+Astro.cache.set(ch1)
+Astro.cache.set(ch2)
+Astro.cache.set(ch3)
+
+const { siteTitle, siteTagline } = resolveStarterSiteIdentity(await getSiteSettings())
+
+const featuredLic = licenciaturas.find(l => l.data.slug === 'mercadotecnia')
+const restLics = licenciaturas.filter(l => l.data.slug !== 'mercadotecnia')
+const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
 ---
 
 <Base title={siteTitle} description={siteTagline}>
-	<h1>Recent CUT Posts</h1>
-	{
-		posts.length === 0 ? (
-			<p>
-				No posts yet.{" "}
-				<a href="/_emdash/admin/content/posts/new">Create one</a>.
-			</p>
-		) : (
-			<ul>
-				{posts.map((post) => (
-					<li>
-						<a href={`/posts/${post.id}`}>
-							{post.data.featured_image && (
-								<Image image={post.data.featured_image} />
-							)}
-							<h2>{post.data.title}</h2>
-						</a>
-						{post.data.excerpt && <p>{post.data.excerpt}</p>}
-						{post.data.publishedAt && (
-							<time datetime={post.data.publishedAt.toISOString()}>
-								{post.data.publishedAt.toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</time>
-						)}
-					</li>
-				))}
-			</ul>
-		)
-	}
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <Eyebrow>Ciclo Escolar 2026 · Inscripciones Abiertas</Eyebrow>
+          <h1 class="t-display-lg" style="margin: 1.5rem 0 1.75rem;">
+            Liberar <em style="font-style:italic; color:var(--primary); font-weight:500;">Educando</em>,<br/>
+            formar para<br/>transformar.
+          </h1>
+          <p class="t-body-lg hero-lede">
+            Una educación integral comprometida con la justicia social, el pensamiento crítico y la inclusión.
+          </p>
+          <div class="hero-cta">
+            <Button variant="primary" href="/estudio/convocatoria">Solicitar admisión →</Button>
+            <Button variant="outline" href="/estudio/oferta-educativa">Ver oferta educativa</Button>
+          </div>
+        </div>
+        <aside class="hero-aside">
+          <div class="stat-row">
+            <StatCard value="7" suffix="+" label="Licenciaturas" />
+            <StatCard value="4" label="Maestrías" />
+            <StatCard value="15" suffix="yr" label="De Trayectoria" />
+          </div>
+          <FeaturedAvisoCard
+            day="29"
+            monthYear="Junio 25"
+            kicker="Aviso Académico"
+            title="Examen de admisión — Primera vuelta"
+            meta="Resultados disponibles en línea. Consulta el listado oficial."
+            linkText="Ver resultados →"
+            href="/posts/bienvenida-cut-2026"
+          />
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- Misión -->
+  <section class="section" id="about">
+    <div class="container">
+      <SectionHeader
+        num="— 01"
+        title="Nuestra misión."
+        description="Una institución comprometida con la formación integral de profesionales."
+      />
+      <div class="mission-grid">
+        <div>
+          <PullQuote>
+            "Proporcionar una educación de calidad que promueva la justicia social, el pensamiento crítico y la inclusión, contribuyendo al desarrollo integral de individuos capaces de liderar en un mundo globalizado."
+          </PullQuote>
+          <p class="t-body-md" style="margin-top:2rem;">
+            El Centro Universitario Tlacaélel forma personas comprometidas con el desarrollo de su comunidad, brindando una educación integral para el mejoramiento continuo que favorezca a cada estudiante en su crecimiento personal y profesional.
+          </p>
+        </div>
+        <div class="pillars">
+          <Pillar label="— Visión" heading="Excelencia con compromiso social." body="Ser reconocidos como institución de excelencia en la formación de profesionales comprometidos con la transformación social mexicana." />
+          <Pillar label="— Valores" heading="Ética, innovación y cultura." body="La integración del contenido académico con la ética profesional, la innovación pedagógica, el deporte y la actividad cultural." />
+          <Pillar label="— Modelo" heading="Formación integral y crítica." body="Programas que abordan las necesidades del entorno laboral y fomentan la responsabilidad social y los derechos humanos." />
+          <Pillar label="— Identidad" heading="Tlacaélel — el Azteca entre los aztecas." body="Honramos una tradición de pensamiento mexicano arraigada en el rigor, la disciplina y la responsabilidad colectiva." />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Oferta educativa -->
+  <section class="section section--low" id="programs">
+    <div class="container">
+      <SectionHeader
+        num="— 02"
+        title="Oferta educativa."
+        description="Siete licenciaturas y posgrados, diseñados para las demandas del entorno profesional contemporáneo."
+      />
+      <div class="program-grid">
+        {orderedLics.map((entry, i) => {
+          const isFeatured = entry.data.slug === 'mercadotecnia'
+          const displayIdx = isFeatured ? '— 01' : `— ${String(i + 1).padStart(2, '0')}`
+          return isFeatured ? (
+            <div class="prog--span2">
+              <ProgramCard
+                index={`${displayIdx} · Nuevo 2026`}
+                title={entry.data.title}
+                meta={`${entry.data.modality ?? 'Presencial'} · ${entry.data.duration ?? '9 sem.'}`}
+                href={`/licenciaturas/${(entry as any).slug}`}
+                variant="featured"
+                />
+                </div>
+                ) : (
+                <ProgramCard
+                index={displayIdx}
+                title={entry.data.title}
+                meta="Licenciatura"
+                href={`/licenciaturas/${(entry as any).slug}`}
+                variant="default"
+                />
+                )
+                })}      </div>
+      <div class="programs-subsection">
+        <div class="programs-subsection-head">
+          <div>
+            <div class="t-mono">— Posgrados</div>
+            <h3 class="t-headline-md" style="margin:0;">Maestrías y especialidades.</h3>
+          </div>
+          <p class="t-label-md">Modalidad modular y mixta · Desarrollo semestral</p>
+        </div>
+        <div class="masters-grid" style="margin-top:0;">
+          {maestrias.map((entry, i) => (
+            <ProgramCard
+              index={`M.${String(i + 1).padStart(2, '0')}`}
+              title={entry.data.title}
+              meta={`Maestría${entry.data.duration ? ` · ${entry.data.duration}` : ''}`}
+              href={`/estudio/maestrias/${entry.data.slug}`}
+              variant="master"
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Noticias -->
+  <section class="section" id="news">
+    <div class="container">
+      <SectionHeader num="— 03" title="Noticias y avisos." description="Convocatorias, resultados y eventos del Centro Universitario." />
+      {posts.length > 0 ? (
+        <div class="news-grid">
+          <NewsCard
+            date={posts[0].data.fecha_publicacion
+              ? new Date(posts[0].data.fecha_publicacion).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+              : 'Reciente'}
+            title={posts[0].data.title}
+            excerpt={posts[0].data.excerpt}
+            href={`/posts/${posts[0].data.slug}`}
+            imageRatio="4:5"
+          />
+          {posts.length > 1 && (
+            <div class="news-side">
+              {posts.slice(1, 3).map(post => (
+                <NewsCard
+                  date={post.data.fecha_publicacion
+                    ? new Date(post.data.fecha_publicacion).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : 'Reciente'}
+                  title={post.data.title}
+                  excerpt={post.data.excerpt}
+                  href={`/posts/${post.data.slug}`}
+                  imageRatio="4:3"
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <p class="t-body-md">No hay noticias recientes.</p>
+      )}
+    </div>
+  </section>
+
+  <!-- Vida universitaria -->
+  <section class="section section--low">
+    <div class="container">
+      <SectionHeader num="— 04" title="Vida universitaria." description="Campus, actividades culturales, deportivas y vida cotidiana en CUT." />
+      <div class="gallery-grid">
+        <ImagePlaceholder context="CAMPUS" ratio="4:3" filename="fachada-principal.jpg" className="g1" />
+        <ImagePlaceholder context="EVENT" ratio="4:3" filename="danza-espartaqueada.jpg" className="g2" />
+        <ImagePlaceholder context="ACADEMIC" ratio="1:1" filename="biblioteca-central.jpg" className="g3" />
+        <ImagePlaceholder context="EVENT" ratio="4:3" filename="ceremonia.jpg" className="g4" />
+        <ImagePlaceholder context="CAMPUS" ratio="3:4" filename="vista-aerea-DJI.jpg" className="g5" />
+        <ImagePlaceholder context="STUDENTS" ratio="16:9" filename="actividades-grupo.jpg" className="g6" />
+        <ImagePlaceholder context="SPORTS" ratio="16:9" filename="torneo-deportivo.jpg" className="g7" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Más allá del aula -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader num="— 05" title="Más allá del aula." description="La formación integral exige cuerpo y cultura. Talleres abiertos a estudiantes de todas las carreras." />
+    </div>
+    <div class="culture-split">
+      <div class="culture-cell">
+        <ImagePlaceholder context="CULTURE" ratio="16:9" filename="taller-cultural.jpg" className="culture-cell-img" />
+        <div>
+          <Eyebrow>— Talleres Culturales</Eyebrow>
+          <h3>La cultura como herramienta crítica.</h3>
+          <p class="t-body-md" style="margin-top:.85rem;">Danza, teatro, literatura y artes visuales — espacios para la expresión, la identidad y el pensamiento.</p>
+        </div>
+        <Button variant="ghost" href="/cultura">Conoce los talleres →</Button>
+      </div>
+      <div class="culture-cell culture-cell--dark">
+        <ImagePlaceholder context="SPORT" ratio="16:9" filename="actividad-deportiva.jpg" className="culture-cell-img" dark />
+        <div>
+          <Eyebrow dark>— Talleres Deportivos</Eyebrow>
+          <h3>Disciplina, equipo, comunidad.</h3>
+          <p style="color:rgba(255,255,255,.7); font-size:1rem; margin-top:.85rem; line-height:1.6;">Programas que fomentan el desarrollo físico, emocional y social.</p>
+        </div>
+        <Button variant="dark-border" href="/deportes">Conoce los deportes →</Button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Inscripciones -->
+  <div class="cta-section">
+    <div class="container">
+      <div class="cta-grid">
+        <div>
+          <Eyebrow dark>— Inscripciones 2026-1</Eyebrow>
+          <h2 class="cta-title">
+            Tu lugar en el<br/><em>Centro Universitario</em><br/>te espera.
+          </h2>
+          <p class="cta-copy">Consulta la convocatoria oficial, requisitos de admisión y fechas clave del proceso.</p>
+          <div style="display:flex; gap:.9rem; flex-wrap:wrap;">
+            <Button variant="primary" href="/estudio/convocatoria">Descargar convocatoria</Button>
+            <Button variant="dark-border" href="#">Pre-registro CIU →</Button>
+          </div>
+        </div>
+        <div class="key-dates">
+          <KeyDate day="26" month="Jul" label="Examen Mercadotecnia" description="Aplicación primera vuelta · Aula 14" />
+          <KeyDate day="15" month="Ago" label="Inicio del semestre" description="Ciclo 2026-1 · Todas las licenciaturas" />
+          <KeyDate day="02" month="Sep" label="Congreso Internacional" description="III CIU · Pre-registro abierto" />
+        </div>
+      </div>
+    </div>
+  </div>
+
 </Base>
