@@ -25,7 +25,7 @@ const defaultNavLinks: NavLink[] = [
 
 export function Header({ navLinks = defaultNavLinks, ctaLabel, ctaHref }: HeaderProps) {
   return (
-    <header>
+    <header style={{ position: 'sticky', top: 0, zIndex: 100 }}>
       <UtilityBar
         links={[
           { label: 'Convocatoria 2026-1', href: '#' },
