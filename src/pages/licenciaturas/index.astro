@@ -1,0 +1,152 @@
+---
+import { getEmDashCollection, getSiteSettings } from "emdash";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import { SectionHeader } from "../../components/SectionHeader";
+import { ProgramCard } from "../../components/ProgramCard";
+import { Button } from "../../components/Button";
+
+const { entries: licenciaturas, cacheHint } = await getEmDashCollection("licenciaturas", {
+	orderBy: { order: "asc" },
+});
+Astro.cache.set(cacheHint);
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const featuredLic = licenciaturas.find((l) => l.data.slug === "mercadotecnia");
+const restLics = licenciaturas.filter((l) => l.data.slug !== "mercadotecnia");
+const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas;
+---
+
+<Base
+	title={`Licenciaturas — ${siteTitle}`}
+	description="Siete licenciaturas diseñadas para las demandas del entorno profesional contemporáneo."
+>
+	<!-- Hero -->
+	<div class="hero">
+		<div class="container">
+			<div class="page-hero">
+				<div>
+					<span class="eyebrow">Oferta Educativa · Licenciaturas</span>
+					<h1 class="t-display-lg" style="margin-top:1rem;">Elige tu<br/><em>programa académico.</em></h1>
+					<p class="t-body-lg hero-lede" style="margin-top:1.5rem;">
+						Formación profesional con enfoque humanista, vinculada al entorno laboral y comprometida con el desarrollo regional.
+					</p>
+				</div>
+				<div class="page-hero-meta">
+					<div class="stat">
+						<div class="num">{licenciaturas.length}<sup>+</sup></div>
+						<div class="lbl">Licenciaturas</div>
+					</div>
+					<div class="stat">
+						<div class="num">Pres.</div>
+						<div class="lbl">Modalidad</div>
+					</div>
+					<div class="stat">
+						<div class="num">SEP</div>
+						<div class="lbl">RVOE</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Grid -->
+	<section class="section section--low">
+		<div class="container">
+			<SectionHeader
+				num="— 01"
+				title="Programas de licenciatura."
+				description="Planes de estudio actualizados y pertinentes para el mercado profesional."
+			/>
+			<div class="program-grid">
+				{orderedLics.map((entry, i) => {
+					const isFeatured = entry.data.slug === "mercadotecnia";
+					const displayIdx = isFeatured ? "— 01" : `— ${String(i + 1).padStart(2, "0")}`;
+					return isFeatured ? (
+						<div class="prog--span2">
+							<ProgramCard
+								index={`${displayIdx} · Nuevo 2026`}
+								title={entry.data.title}
+								meta={`${entry.data.modality ?? "Presencial"} · ${entry.data.duration ?? "9 sem."}`}
+								href={`/licenciaturas/${(entry as any).slug}`}
+								variant="featured"
+							/>
+						</div>
+					) : (
+						<ProgramCard
+							index={displayIdx}
+							title={entry.data.title}
+							meta={entry.data.modality ?? "Licenciatura"}
+							href={`/licenciaturas/${(entry as any).slug}`}
+							variant="default"
+						/>
+					);
+				})}
+			</div>
+		</div>
+	</section>
+
+	<!-- CTA -->
+	<section class="cta-section">
+		<div class="container">
+			<div class="cta-grid">
+				<div>
+					<span class="eyebrow eyebrow--light">Inscripciones 2026-1</span>
+					<h2 class="cta-title">Tu lugar en el<br/><em>Centro Universitario</em><br/>te espera.</h2>
+					<p class="cta-copy">Consulta la convocatoria oficial, requisitos de admisión y fechas clave del proceso.</p>
+					<div style="display:flex;gap:.9rem;flex-wrap:wrap;margin-top:2rem;">
+						<Button variant="primary" href="/estudio/convocatoria">Descargar convocatoria</Button>
+						<Button variant="dark-border" href="/estudio/admision">Ver requisitos</Button>
+					</div>
+				</div>
+				<div class="key-dates">
+					<div class="key-date">
+						<div class="d">26<span>Jul</span></div>
+						<div>
+							<div class="kl">Examen de admisión</div>
+							<div class="kd">Primera vuelta · Aula 14</div>
+						</div>
+					</div>
+					<div class="key-date">
+						<div class="d">15<span>Ago</span></div>
+						<div>
+							<div class="kl">Inicio del semestre</div>
+							<div class="kd">Ciclo 2026-1 · Todas las licenciaturas</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+	.page-hero {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 4rem;
+		align-items: end;
+	}
+
+	.page-hero-meta {
+		display: flex;
+		gap: 2.5rem;
+		align-items: flex-end;
+		padding-bottom: 0.5rem;
+	}
+
+	.hero-lede {
+		max-width: 36rem;
+	}
+
+	@media (max-width: 768px) {
+		.page-hero {
+			grid-template-columns: 1fr;
+		}
+
+		.page-hero-meta {
+			display: none;
+		}
+	}
+</style>
