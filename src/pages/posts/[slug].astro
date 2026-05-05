@@ -1,32 +1,19 @@
 ---
-import { getEmDashEntry, getEntryTerms, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
+import { getEntryTerms } from "emdash";
 import { Image, PortableText, WidgetArea } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import { resolveEntryPage } from "../../utils/resolve-entry-page";
 
-const slug = decodeSlug(Astro.params.slug);
+const result = await resolveEntryPage(
+	"posts",
+	Astro.params.slug,
+	Astro.url.origin,
+	(s) => `/posts/${s}`,
+);
+if (!result.found) return Astro.redirect("/404");
+Astro.cache.set(result.cacheHint);
+const { entry: post, seo, slug } = result;
 
-if (!slug) {
-	return Astro.redirect("/404");
-}
-
-const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);
-
-if (!post) {
-	return Astro.redirect("/404");
-}
-
-Astro.cache.set(cacheHint);
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
-
-// SEO meta from content fields
-const seo = getSeoMeta(post, {
-	siteTitle,
-	siteUrl: Astro.url.origin,
-	path: `/posts/${slug}`,
-});
-
-// Taxonomy terms for this post (use post.data.id, not post.id)
 const tags = await getEntryTerms("posts", post.data.id, "tag");
 const categories = await getEntryTerms("posts", post.data.id, "category");
 ---
