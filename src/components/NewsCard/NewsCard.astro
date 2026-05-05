@@ -1,0 +1,48 @@
+---
+import { Image } from "emdash/ui";
+
+interface Props {
+  date: string;
+  title: string;
+  excerpt?: string;
+  href?: string;
+  image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  imageRatio?: string;
+}
+
+const { date, title, excerpt, href, image } = Astro.props;
+---
+
+<article class="news-item">
+  <div class="news-img">
+    {image
+      ? <Image image={image} />
+      : <div class="ph news-img__ph"></div>
+    }
+  </div>
+  <div style="margin-top:1rem;">
+    <div class="date-badge"><span class="dot"></span>{date}</div>
+    <h3 style="margin-top:0.5rem;">{title}</h3>
+    {excerpt && <p>{excerpt}</p>}
+    {href && <a class="news-more" href={href}>Leer más →</a>}
+  </div>
+</article>
+
+<style>
+  .news-img {
+    aspect-ratio: 4/3;
+    overflow: hidden;
+  }
+
+  .news-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .news-img__ph {
+    width: 100%;
+    height: 100%;
+  }
+</style>

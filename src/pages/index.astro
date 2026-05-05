@@ -3,16 +3,10 @@ import { getEmDashCollection, getSiteSettings } from "emdash"
 import Base from "../layouts/Base.astro"
 import { resolveStarterSiteIdentity } from "../utils/site-identity"
 import { SectionHeader } from "../components/SectionHeader"
-import { StatCard } from "../components/StatCard"
 import { FeaturedAvisoCard } from "../components/FeaturedAvisoCard"
 import { ProgramCard } from "../components/ProgramCard"
-import { NewsCard } from "../components/NewsCard"
-import { Pillar } from "../components/Pillar"
-import { PullQuote } from "../components/PullQuote"
-import { KeyDate } from "../components/KeyDate"
-import { ImagePlaceholder } from "../components/ImagePlaceholder"
+import NewsCard from "../components/NewsCard/NewsCard.astro"
 import { Button } from "../components/Button"
-import { Eyebrow } from "../components/Eyebrow"
 
 const [
   { entries: licenciaturas, cacheHint: ch1 },
@@ -41,7 +35,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
     <div class="container">
       <div class="hero-grid">
         <div>
-          <Eyebrow>Ciclo Escolar 2026 · Inscripciones Abiertas</Eyebrow>
+          <span class="eyebrow">Ciclo Escolar 2026 · Inscripciones Abiertas</span>
           <h1 class="t-display-lg" style="margin: 1.5rem 0 1.75rem;">
             Liberar <em style="font-style:italic; color:var(--primary); font-weight:500;">Educando</em>,<br/>
             formar para<br/>transformar.
@@ -56,9 +50,18 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
         </div>
         <aside class="hero-aside">
           <div class="stat-row">
-            <StatCard value="7" suffix="+" label="Licenciaturas" />
-            <StatCard value="4" label="Maestrías" />
-            <StatCard value="15" suffix="yr" label="De Trayectoria" />
+            <div class="stat">
+              <div class="num">7<sup>+</sup></div>
+              <div class="lbl">Licenciaturas</div>
+            </div>
+            <div class="stat">
+              <div class="num">4</div>
+              <div class="lbl">Maestrías</div>
+            </div>
+            <div class="stat">
+              <div class="num">15<sup>yr</sup></div>
+              <div class="lbl">De Trayectoria</div>
+            </div>
           </div>
           <FeaturedAvisoCard
             day="29"
@@ -84,18 +87,42 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
       />
       <div class="mission-grid">
         <div>
-          <PullQuote>
+          <blockquote class="pull-q">
             "Proporcionar una educación de calidad que promueva la justicia social, el pensamiento crítico y la inclusión, contribuyendo al desarrollo integral de individuos capaces de liderar en un mundo globalizado."
-          </PullQuote>
+          </blockquote>
           <p class="t-body-md" style="margin-top:2rem;">
             El Centro Universitario Tlacaélel forma personas comprometidas con el desarrollo de su comunidad, brindando una educación integral para el mejoramiento continuo que favorezca a cada estudiante en su crecimiento personal y profesional.
           </p>
         </div>
         <div class="pillars">
-          <Pillar label="— Visión" heading="Excelencia con compromiso social." body="Ser reconocidos como institución de excelencia en la formación de profesionales comprometidos con la transformación social mexicana." />
-          <Pillar label="— Valores" heading="Ética, innovación y cultura." body="La integración del contenido académico con la ética profesional, la innovación pedagógica, el deporte y la actividad cultural." />
-          <Pillar label="— Modelo" heading="Formación integral y crítica." body="Programas que abordan las necesidades del entorno laboral y fomentan la responsabilidad social y los derechos humanos." />
-          <Pillar label="— Identidad" heading="Tlacaélel — el Azteca entre los aztecas." body="Honramos una tradición de pensamiento mexicano arraigada en el rigor, la disciplina y la responsabilidad colectiva." />
+          <div class="pillar">
+            <div class="label">— Visión</div>
+            <div>
+              <h3>Excelencia con compromiso social.</h3>
+              <p>Ser reconocidos como institución de excelencia en la formación de profesionales comprometidos con la transformación social mexicana.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="label">— Valores</div>
+            <div>
+              <h3>Ética, innovación y cultura.</h3>
+              <p>La integración del contenido académico con la ética profesional, la innovación pedagógica, el deporte y la actividad cultural.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="label">— Modelo</div>
+            <div>
+              <h3>Formación integral y crítica.</h3>
+              <p>Programas que abordan las necesidades del entorno laboral y fomentan la responsabilidad social y los derechos humanos.</p>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="label">— Identidad</div>
+            <div>
+              <h3>Tlacaélel — el Azteca entre los aztecas.</h3>
+              <p>Honramos una tradición de pensamiento mexicano arraigada en el rigor, la disciplina y la responsabilidad colectiva.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -147,7 +174,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
               index={`M.${String(i + 1).padStart(2, '0')}`}
               title={entry.data.title}
               meta={`Maestría${entry.data.duration ? ` · ${entry.data.duration}` : ''}`}
-              href={`/estudio/maestrias/${entry.data.slug}`}
+              href={`/maestrias/${entry.data.slug}`}
               variant="master"
             />
           ))}
@@ -169,6 +196,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
             title={posts[0].data.title}
             excerpt={posts[0].data.excerpt}
             href={`/posts/${posts[0].data.slug}`}
+            image={posts[0].data.featured_image}
             imageRatio="4:5"
           />
           {posts.length > 1 && (
@@ -181,6 +209,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
                   title={post.data.title}
                   excerpt={post.data.excerpt}
                   href={`/posts/${post.data.slug}`}
+                  image={post.data.featured_image}
                   imageRatio="4:3"
                 />
               ))}
@@ -198,13 +227,13 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
     <div class="container">
       <SectionHeader num="— 04" title="Vida universitaria." description="Campus, actividades culturales, deportivas y vida cotidiana en CUT." />
       <div class="gallery-grid">
-        <ImagePlaceholder context="CAMPUS" ratio="4:3" filename="fachada-principal.jpg" className="g1" />
-        <ImagePlaceholder context="EVENT" ratio="4:3" filename="danza-espartaqueada.jpg" className="g2" />
-        <ImagePlaceholder context="ACADEMIC" ratio="1:1" filename="biblioteca-central.jpg" className="g3" />
-        <ImagePlaceholder context="EVENT" ratio="4:3" filename="ceremonia.jpg" className="g4" />
-        <ImagePlaceholder context="CAMPUS" ratio="3:4" filename="vista-aerea-DJI.jpg" className="g5" />
-        <ImagePlaceholder context="STUDENTS" ratio="16:9" filename="actividades-grupo.jpg" className="g6" />
-        <ImagePlaceholder context="SPORTS" ratio="16:9" filename="torneo-deportivo.jpg" className="g7" />
+        <div class="ph g1"></div>
+        <div class="ph g2"></div>
+        <div class="ph g3"></div>
+        <div class="ph g4"></div>
+        <div class="ph g5"></div>
+        <div class="ph g6"></div>
+        <div class="ph g7"></div>
       </div>
     </div>
   </section>
@@ -216,18 +245,18 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
     </div>
     <div class="culture-split">
       <div class="culture-cell">
-        <ImagePlaceholder context="CULTURE" ratio="16:9" filename="taller-cultural.jpg" className="culture-cell-img" />
+        <div class="ph culture-cell-img"></div>
         <div>
-          <Eyebrow>— Talleres Culturales</Eyebrow>
+          <span class="eyebrow">— Talleres Culturales</span>
           <h3>La cultura como herramienta crítica.</h3>
           <p class="t-body-md" style="margin-top:.85rem;">Danza, teatro, literatura y artes visuales — espacios para la expresión, la identidad y el pensamiento.</p>
         </div>
         <Button variant="ghost" href="/cultura">Conoce los talleres →</Button>
       </div>
       <div class="culture-cell culture-cell--dark">
-        <ImagePlaceholder context="SPORT" ratio="16:9" filename="actividad-deportiva.jpg" className="culture-cell-img" dark />
+        <div class="ph ph--dark culture-cell-img"></div>
         <div>
-          <Eyebrow dark>— Talleres Deportivos</Eyebrow>
+          <span class="eyebrow eyebrow--light">— Talleres Deportivos</span>
           <h3>Disciplina, equipo, comunidad.</h3>
           <p style="color:rgba(255,255,255,.7); font-size:1rem; margin-top:.85rem; line-height:1.6;">Programas que fomentan el desarrollo físico, emocional y social.</p>
         </div>
@@ -241,7 +270,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
     <div class="container">
       <div class="cta-grid">
         <div>
-          <Eyebrow dark>— Inscripciones 2026-1</Eyebrow>
+          <span class="eyebrow eyebrow--light">— Inscripciones 2026-1</span>
           <h2 class="cta-title">
             Tu lugar en el<br/><em>Centro Universitario</em><br/>te espera.
           </h2>
@@ -252,9 +281,27 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
           </div>
         </div>
         <div class="key-dates">
-          <KeyDate day="26" month="Jul" label="Examen Mercadotecnia" description="Aplicación primera vuelta · Aula 14" />
-          <KeyDate day="15" month="Ago" label="Inicio del semestre" description="Ciclo 2026-1 · Todas las licenciaturas" />
-          <KeyDate day="02" month="Sep" label="Congreso Internacional" description="III CIU · Pre-registro abierto" />
+          <div class="key-date">
+            <div class="d">26<span>Jul</span></div>
+            <div>
+              <div class="kl">Examen Mercadotecnia</div>
+              <div class="kd">Aplicación primera vuelta · Aula 14</div>
+            </div>
+          </div>
+          <div class="key-date">
+            <div class="d">15<span>Ago</span></div>
+            <div>
+              <div class="kl">Inicio del semestre</div>
+              <div class="kd">Ciclo 2026-1 · Todas las licenciaturas</div>
+            </div>
+          </div>
+          <div class="key-date">
+            <div class="d">02<span>Sep</span></div>
+            <div>
+              <div class="kl">Congreso Internacional</div>
+              <div class="kd">III CIU · Pre-registro abierto</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
