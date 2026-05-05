@@ -1,0 +1,61 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+	title: string;
+	pageTitle?: string | null;
+	description?: string | null;
+	canonical?: string | null;
+	collection: string;
+	entryId: string;
+	slug: string;
+}
+
+const { title, pageTitle, description, canonical, collection, entryId, slug } = Astro.props;
+---
+
+<Base
+	title={title}
+	pageTitle={pageTitle}
+	description={description}
+	canonical={canonical}
+	content={{ collection, id: entryId, slug }}
+>
+	<slot name="hero" />
+
+	<section class="section">
+		<div class="container">
+			<div class="prog-grid">
+				<div class="prog-main">
+					<slot name="content-main" />
+				</div>
+				<aside class="prog-sidebar">
+					<slot name="sidebar" />
+				</aside>
+			</div>
+		</div>
+	</section>
+
+	<slot name="mid" />
+	<slot name="curriculum" />
+	<slot name="cta" />
+</Base>
+
+<style>
+	.prog-grid {
+		display: grid;
+		grid-template-columns: 1fr 340px;
+		gap: 5rem;
+	}
+
+	@media (max-width: 1024px) {
+		.prog-grid {
+			grid-template-columns: 1fr;
+			gap: 3rem;
+		}
+
+		.prog-sidebar {
+			order: -1;
+		}
+	}
+</style>

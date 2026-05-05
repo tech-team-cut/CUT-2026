@@ -1,160 +1,149 @@
 ---
-import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
 import { PortableText } from "emdash/ui";
-import Base from "../../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../../utils/site-identity";
-import { CurriculumGrid } from "../../components/CurriculumGrid";
+import ProgramDetail from "../../layouts/ProgramDetail.astro";
 import { SectionHeader } from "../../components/SectionHeader";
-import { Eyebrow } from "../../components/Eyebrow";
+import { CurriculumGrid } from "../../components/CurriculumGrid";
 import { Button } from "../../components/Button";
-import { StatCard } from "../../components/StatCard";
+import { resolveEntryPage } from "../../utils/resolve-entry-page";
 
-const slug = decodeSlug(Astro.params.slug);
-
-if (!slug) {
-	return Astro.redirect("/404");
-}
-
-const { entry: program, cacheHint } = await getEmDashEntry("maestrias", slug);
-
-if (!program) {
-	return Astro.redirect("/404");
-}
-
-Astro.cache.set(cacheHint);
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
-
-const seo = getSeoMeta(program, {
-	siteTitle,
-	siteUrl: Astro.url.origin,
-	path: `/maestrias/${slug}`,
-});
+const result = await resolveEntryPage(
+	"maestrias",
+	Astro.params.slug,
+	Astro.url.origin,
+	(s) => `/maestrias/${s}`,
+);
+if (!result.found) return Astro.redirect("/404");
+Astro.cache.set(result.cacheHint);
+const { entry: program, seo, slug } = result;
 
 const chars = (program.data as any).characteristics;
 const curriculum = (program.data as any).curriculum;
 ---
 
-<Base
+<ProgramDetail
 	title={seo.title}
 	pageTitle={seo.ogTitle}
 	description={seo.description}
 	canonical={seo.canonical}
-	content={{ collection: "maestrias", id: program.id, slug }}
+	collection="maestrias"
+	entryId={program.id}
+	{slug}
 >
-	<div class="maestria-detail">
-
-		<!-- Hero — dark, institutional -->
-		<section class="hero-dark">
-			<div class="container">
-				<div class="hero-inner">
-					<div class="hero-main">
-						<Eyebrow dark>Programa de Posgrado · Maestría</Eyebrow>
-						<h1 class="t-display-lg hero-title" {...program.edit.title}>
-							{program.data.title}
-						</h1>
-						{program.data.excerpt && (
-							<p class="t-body-lg hero-lede" {...program.edit.excerpt}>
-								{program.data.excerpt}
-							</p>
-						)}
-						<div class="hero-cta">
-							<Button variant="primary" href="/estudio/convocatoria">
-								Solicitar información
-							</Button>
-							<Button variant="dark-border" href="#plan-estudios">
-								Ver plan de estudios
-							</Button>
-						</div>
+	<!-- Hero dark -->
+	<section class="hero-dark" slot="hero">
+		<div class="container">
+			<div class="hero-inner">
+				<div class="hero-main">
+					<span class="eyebrow eyebrow--light">Programa de Posgrado · Maestría</span>
+					<h1 class="t-display-lg hero-title" {...program.edit.title}>
+						{program.data.title}
+					</h1>
+					{program.data.excerpt && (
+						<p class="t-body-lg hero-lede" {...program.edit.excerpt}>
+							{program.data.excerpt}
+						</p>
+					)}
+					<div class="hero-cta">
+						<Button variant="primary" href="/estudio/convocatoria">Solicitar información</Button>
+						<Button variant="dark-border" href="#plan-estudios">Ver plan de estudios</Button>
 					</div>
-
-					<!-- Program stats from characteristics -->
-					<aside class="stats-panel">
-						<div class="stats-label">Datos del programa</div>
-						<div class="stats-grid">
-							{chars?.total_ciclos && (
-								<StatCard value={String(chars.total_ciclos)} suffix="SEM" label="Semestres" />
-							)}
-							{chars?.creditos && (
-								<StatCard value={String(chars.creditos)} label="Créditos" />
-							)}
-							{chars?.numero_horas && (
-								<StatCard value={chars.numero_horas >= 1000 ? (chars.numero_horas / 1000).toFixed(1) + 'K' : String(chars.numero_horas)} label="Horas" />
-							)}
-							{chars?.total_asignaturas && (
-								<StatCard value={String(chars.total_asignaturas)} label="Materias" />
-							)}
-						</div>
-						{chars && (
-							<dl class="chars-list">
-								{chars.diseño_curricular && (
-									<>
-										<dt>Diseño curricular</dt>
-										<dd>{chars.diseño_curricular}</dd>
-									</>
-								)}
-								{chars.duracion_ciclo && (
-									<>
-										<dt>Duración por ciclo</dt>
-										<dd>{chars.duracion_ciclo}</dd>
-									</>
-								)}
-								{chars.carga_horaria_semanal && (
-									<>
-										<dt>Carga semanal</dt>
-										<dd>{chars.carga_horaria_semanal} hrs</dd>
-									</>
-								)}
-								<dt>Modalidad</dt>
-								<dd>{program.data.modality}</dd>
-							</dl>
-						)}
-					</aside>
 				</div>
-			</div>
-		</section>
 
-		<!-- Content — objetivo, perfiles, líneas -->
-		<section class="section">
-			<div class="container">
-				<div class="content-grid">
-					<div class="content-main">
-						<SectionHeader
-							num="— 01"
-							title="Sobre el programa."
-							description="Posgrado orientado a la investigación, la práctica profesional avanzada y la contribución al desarrollo institucional."
-						/>
-						<div class="prose" {...program.edit.content}>
-							<PortableText value={program.data.content} />
-						</div>
-					</div>
-
-					<aside class="content-sidebar">
-						<div class="sidebar-card">
-							<h3 class="t-headline-sm">¿Por qué este posgrado en CUT?</h3>
-							<ul class="benefit-list">
-								<li>Docentes activos en el campo profesional.</li>
-								<li>Enfoque práctico con base teórica sólida.</li>
-								<li>Infraestructura especializada para tu área.</li>
-								<li>Excelencia académica a costos accesibles.</li>
-							</ul>
-							<Button variant="primary" href="/estudio/convocatoria" className="w-full">
-								Iniciar proceso de admisión
-							</Button>
-						</div>
-
-						<div class="accreditation-block">
-							<div class="t-label-md" style="color: var(--secondary-soft); margin-bottom: 0.75rem;">Reconocimiento oficial</div>
-							<div class="acred-row">
-								<span class="acred-badge">SEP</span>
-								<span class="acred-badge">RVOE</span>
+				<aside class="stats-panel">
+					<div class="stats-label">Datos del programa</div>
+					<div class="stats-grid">
+						{chars?.total_ciclos && (
+							<div class="stat">
+								<div class="num">{String(chars.total_ciclos)}<sup>SEM</sup></div>
+								<div class="lbl">Semestres</div>
 							</div>
-						</div>
-					</aside>
-				</div>
+						)}
+						{chars?.creditos && (
+							<div class="stat">
+								<div class="num">{String(chars.creditos)}</div>
+								<div class="lbl">Créditos</div>
+							</div>
+						)}
+						{chars?.numero_horas && (
+							<div class="stat">
+								<div class="num">{chars.numero_horas >= 1000 ? (chars.numero_horas / 1000).toFixed(1) + 'K' : String(chars.numero_horas)}</div>
+								<div class="lbl">Horas</div>
+							</div>
+						)}
+						{chars?.total_asignaturas && (
+							<div class="stat">
+								<div class="num">{String(chars.total_asignaturas)}</div>
+								<div class="lbl">Materias</div>
+							</div>
+						)}
+					</div>
+					{chars && (
+						<dl class="chars-list">
+							{chars.diseño_curricular && (
+								<>
+									<dt>Diseño curricular</dt>
+									<dd>{chars.diseño_curricular}</dd>
+								</>
+							)}
+							{chars.duracion_ciclo && (
+								<>
+									<dt>Duración por ciclo</dt>
+									<dd>{chars.duracion_ciclo}</dd>
+								</>
+							)}
+							{chars.carga_horaria_semanal && (
+								<>
+									<dt>Carga semanal</dt>
+									<dd>{chars.carga_horaria_semanal} hrs</dd>
+								</>
+							)}
+							<dt>Modalidad</dt>
+							<dd>{program.data.modality}</dd>
+						</dl>
+					)}
+				</aside>
 			</div>
-		</section>
+		</div>
+	</section>
 
-		<!-- Propedéutico callout -->
+	<!-- Content main -->
+	<Fragment slot="content-main">
+		<SectionHeader
+			num="— 01"
+			title="Sobre el programa."
+			description="Posgrado orientado a la investigación, la práctica profesional avanzada y la contribución al desarrollo institucional."
+		/>
+		<div class="prose" {...program.edit.content}>
+			<PortableText value={program.data.content} />
+		</div>
+	</Fragment>
+
+	<!-- Sidebar -->
+	<Fragment slot="sidebar">
+		<div class="sidebar-card">
+			<h3 class="t-headline-sm">¿Por qué este posgrado en CUT?</h3>
+			<ul class="benefit-list">
+				<li>Docentes activos en el campo profesional.</li>
+				<li>Enfoque práctico con base teórica sólida.</li>
+				<li>Infraestructura especializada para tu área.</li>
+				<li>Excelencia académica a costos accesibles.</li>
+			</ul>
+			<Button variant="primary" href="/estudio/convocatoria" className="w-full">
+				Iniciar proceso de admisión
+			</Button>
+		</div>
+
+		<div class="accreditation-block">
+			<div class="t-label-md acred-label">Reconocimiento oficial</div>
+			<div class="acred-row">
+				<span class="acred-badge">SEP</span>
+				<span class="acred-badge">RVOE</span>
+			</div>
+		</div>
+	</Fragment>
+
+	<!-- Propedéutico -->
+	<Fragment slot="mid">
 		{curriculum?.propedeutico && (
 			<section class="section--propedeutico">
 				<div class="container">
@@ -165,8 +154,10 @@ const curriculum = (program.data as any).curriculum;
 				</div>
 			</section>
 		)}
+	</Fragment>
 
-		<!-- Curriculum -->
+	<!-- Curriculum -->
+	<Fragment slot="curriculum">
 		{curriculum?.semesters?.length > 0 && (
 			<section id="plan-estudios" class="section section--low">
 				<div class="container">
@@ -179,37 +170,32 @@ const curriculum = (program.data as any).curriculum;
 				</div>
 			</section>
 		)}
+	</Fragment>
 
-		<!-- CTA -->
-		<section class="cta-dark">
-			<div class="container">
-				<div class="cta-inner">
-					<div>
-						<div class="t-label-md cta-label">Inscripciones abiertas</div>
-						<h2 class="t-display-md cta-title">Forma parte de nuestra <em>comunidad de posgrado</em></h2>
-						<p class="t-body-lg cta-copy">
-							Amplía tu formación profesional con un programa de excelencia académica, reconocido por la SEP y diseñado para el ejercicio avanzado de tu disciplina.
-						</p>
-						<div class="cta-actions">
-							<Button variant="primary" href="/estudio/admision">
-								Ver requisitos de admisión
-							</Button>
-							<Button variant="dark-border" href="/estudio/convocatoria">
-								Convocatoria 2026
-							</Button>
-						</div>
-					</div>
-					<div class="cta-divider" aria-hidden="true"></div>
-					<div class="cta-contact">
-						<div class="t-label-md cta-label">Contacto</div>
-						<p class="cta-contact-text">Centro Universitario Tlacaélel<br />www.cut.com.mx</p>
+	<!-- CTA dark -->
+	<section class="cta-dark" slot="cta">
+		<div class="container">
+			<div class="cta-inner">
+				<div>
+					<div class="t-label-md cta-eyebrow">Inscripciones abiertas</div>
+					<h2 class="t-display-md cta-title">Forma parte de nuestra <em>comunidad de posgrado</em></h2>
+					<p class="t-body-lg cta-copy">
+						Amplía tu formación profesional con un programa de excelencia académica, reconocido por la SEP y diseñado para el ejercicio avanzado de tu disciplina.
+					</p>
+					<div class="cta-actions">
+						<Button variant="primary" href="/estudio/admision">Ver requisitos de admisión</Button>
+						<Button variant="dark-border" href="/estudio/convocatoria">Convocatoria 2026</Button>
 					</div>
 				</div>
+				<div class="cta-divider" aria-hidden="true"></div>
+				<div class="cta-contact">
+					<div class="t-label-md cta-eyebrow">Contacto</div>
+					<p class="cta-contact-text">Centro Universitario Tlacaélel<br />www.cut.com.mx</p>
+				</div>
 			</div>
-		</section>
-
-	</div>
-</Base>
+		</div>
+	</section>
+</ProgramDetail>
 
 <style>
 	/* ── Hero dark ── */
@@ -217,7 +203,7 @@ const curriculum = (program.data as any).curriculum;
 		background: var(--secondary);
 		color: #fff;
 		padding-block: var(--section-pad);
-		border-bottom: 1px solid rgba(255,255,255,0.08);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 	}
 
 	.hero-inner {
@@ -233,7 +219,7 @@ const curriculum = (program.data as any).curriculum;
 	}
 
 	.hero-lede {
-		color: rgba(255,255,255,0.7);
+		color: rgba(255, 255, 255, 0.7);
 		margin-top: 1.25rem;
 		max-width: 560px;
 	}
@@ -247,9 +233,9 @@ const curriculum = (program.data as any).curriculum;
 
 	/* ── Stats panel ── */
 	.stats-panel {
-		border: 1px solid rgba(255,255,255,0.12);
+		border: 1px solid rgba(255, 255, 255, 0.12);
 		padding: 2rem;
-		background: rgba(255,255,255,0.04);
+		background: rgba(255, 255, 255, 0.04);
 		margin-top: 4rem;
 	}
 
@@ -259,7 +245,7 @@ const curriculum = (program.data as any).curriculum;
 		font-weight: 600;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: rgba(255,255,255,0.4);
+		color: rgba(255, 255, 255, 0.4);
 		margin-bottom: 1.5rem;
 	}
 
@@ -267,14 +253,13 @@ const curriculum = (program.data as any).curriculum;
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: 1px;
-		background: rgba(255,255,255,0.08);
-		border: 1px solid rgba(255,255,255,0.08);
+		background: rgba(255, 255, 255, 0.08);
+		border: 1px solid rgba(255, 255, 255, 0.08);
 		margin-bottom: 2rem;
 	}
 
-	/* Override StatCard for dark context */
 	.stats-grid :global(.stat) {
-		background: rgba(255,255,255,0.04);
+		background: rgba(255, 255, 255, 0.04);
 		padding: 1.25rem 1rem;
 	}
 
@@ -301,7 +286,7 @@ const curriculum = (program.data as any).curriculum;
 		font-weight: 500;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		color: rgba(255,255,255,0.45);
+		color: rgba(255, 255, 255, 0.45);
 		margin-top: 0.4rem;
 	}
 
@@ -310,36 +295,91 @@ const curriculum = (program.data as any).curriculum;
 		grid-template-columns: auto 1fr;
 		gap: 0.5rem 1.5rem;
 		font-size: 0.8125rem;
-		border-top: 1px solid rgba(255,255,255,0.08);
+		border-top: 1px solid rgba(255, 255, 255, 0.08);
 		padding-top: 1.5rem;
 	}
 
 	.chars-list dt {
-		color: rgba(255,255,255,0.4);
+		color: rgba(255, 255, 255, 0.4);
 		font-family: var(--sans);
 		font-weight: 500;
 		white-space: nowrap;
 	}
 
 	.chars-list dd {
-		color: rgba(255,255,255,0.8);
+		color: rgba(255, 255, 255, 0.8);
 		font-family: var(--sans);
 		font-weight: 500;
 	}
 
-	/* ── Content section ── */
-	.content-grid {
-		display: grid;
-		grid-template-columns: 1fr 320px;
-		gap: 5rem;
-		align-items: start;
+	/* ── Sidebar ── */
+	.sidebar-card {
+		background: var(--surface-bright);
+		border: 1px solid var(--outline-soft);
+		padding: 2rem;
+		position: sticky;
+		top: calc(84px + 4rem);
 	}
 
+	.benefit-list {
+		margin: 1.5rem 0 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.875rem;
+	}
+
+	.benefit-list li {
+		font-size: 0.9rem;
+		color: var(--tertiary);
+		padding-left: 1.25rem;
+		position: relative;
+		line-height: 1.5;
+	}
+
+	.benefit-list li::before {
+		content: "—";
+		color: var(--primary);
+		position: absolute;
+		left: 0;
+		font-weight: 500;
+	}
+
+	.w-full {
+		width: 100%;
+		justify-content: center;
+	}
+
+	.accreditation-block {
+		margin-top: 1.5rem;
+		padding: 1.5rem 2rem;
+		border: 1px solid var(--outline-soft);
+		background: var(--surface-low);
+	}
+
+	.acred-label {
+		margin-bottom: 0.75rem;
+	}
+
+	.acred-row {
+		display: flex;
+		gap: 0.75rem;
+	}
+
+	.acred-badge {
+		font-family: var(--mono);
+		font-size: 0.75rem;
+		font-weight: 500;
+		letter-spacing: 0.06em;
+		color: var(--secondary);
+		border: 1px solid var(--outline);
+		padding: 0.25rem 0.75rem;
+	}
+
+	/* ── Prose ── */
 	.prose {
 		margin-top: 3rem;
 	}
 
-	/* Portable text headings inside prose */
 	.prose :global(h2) {
 		font-family: var(--serif);
 		font-size: 1.375rem;
@@ -381,65 +421,6 @@ const curriculum = (program.data as any).curriculum;
 		font-weight: 600;
 	}
 
-	/* ── Sidebar ── */
-	.sidebar-card {
-		background: var(--surface-bright);
-		border: 1px solid var(--outline-soft);
-		padding: 2rem;
-		position: sticky;
-		top: 100px;
-	}
-
-	.benefit-list {
-		margin: 1.5rem 0 2rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.875rem;
-	}
-
-	.benefit-list li {
-		font-size: 0.9rem;
-		color: var(--tertiary);
-		padding-left: 1.25rem;
-		position: relative;
-		line-height: 1.5;
-	}
-
-	.benefit-list li::before {
-		content: "—";
-		color: var(--primary);
-		position: absolute;
-		left: 0;
-		font-weight: 500;
-	}
-
-	.w-full {
-		width: 100%;
-		justify-content: center;
-	}
-
-	.accreditation-block {
-		margin-top: 1.5rem;
-		padding: 1.5rem 2rem;
-		border: 1px solid var(--outline-soft);
-		background: var(--surface-low);
-	}
-
-	.acred-row {
-		display: flex;
-		gap: 0.75rem;
-	}
-
-	.acred-badge {
-		font-family: var(--mono);
-		font-size: 0.75rem;
-		font-weight: 500;
-		letter-spacing: 0.06em;
-		color: var(--secondary);
-		border: 1px solid var(--outline);
-		padding: 0.25rem 0.75rem;
-	}
-
 	/* ── Propedéutico ── */
 	.section--propedeutico {
 		background: var(--surface-container);
@@ -479,7 +460,7 @@ const curriculum = (program.data as any).curriculum;
 		align-items: center;
 	}
 
-	.cta-label {
+	.cta-eyebrow {
 		color: var(--primary);
 		margin-bottom: 1rem;
 	}
@@ -491,11 +472,11 @@ const curriculum = (program.data as any).curriculum;
 
 	.cta-title em {
 		font-style: italic;
-		color: rgba(255,255,255,0.7);
+		color: rgba(255, 255, 255, 0.7);
 	}
 
 	.cta-copy {
-		color: rgba(255,255,255,0.6);
+		color: rgba(255, 255, 255, 0.6);
 		font-size: 1rem;
 		margin-bottom: 2rem;
 		max-width: 500px;
@@ -510,20 +491,19 @@ const curriculum = (program.data as any).curriculum;
 	.cta-divider {
 		width: 1px;
 		height: 160px;
-		background: rgba(255,255,255,0.1);
+		background: rgba(255, 255, 255, 0.1);
 	}
 
 	.cta-contact-text {
 		font-size: 0.9375rem;
-		color: rgba(255,255,255,0.6);
+		color: rgba(255, 255, 255, 0.6);
 		line-height: 1.8;
 		margin-top: 0.75rem;
 	}
 
 	/* ── Responsive ── */
 	@media (max-width: 1024px) {
-		.hero-inner,
-		.content-grid {
+		.hero-inner {
 			grid-template-columns: 1fr;
 			gap: 3rem;
 		}
