@@ -1,5 +1,4 @@
 import React from 'react'
-import { Brand } from '../Brand'
 import { NavItem } from '../NavItem'
 import { UtilityBar } from '../UtilityBar'
 
@@ -13,6 +12,7 @@ interface HeaderProps {
   navLinks?: NavLink[]
   ctaLabel?: string
   ctaHref?: string
+  children?: React.ReactNode
 }
 
 const defaultNavLinks: NavLink[] = [
@@ -23,7 +23,7 @@ const defaultNavLinks: NavLink[] = [
   { label: 'Bolsa de trabajo', href: '#' },
 ]
 
-export function Header({ navLinks = defaultNavLinks, ctaLabel, ctaHref }: HeaderProps) {
+export function Header({ navLinks = defaultNavLinks, ctaLabel, ctaHref, children }: HeaderProps) {
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100 }}>
       <UtilityBar
@@ -50,7 +50,7 @@ export function Header({ navLinks = defaultNavLinks, ctaLabel, ctaHref }: Header
           background: 'var(--surface-bright)',
         }}
       >
-        <Brand />
+        {children}
         <nav style={{ display: 'flex', gap: '1.75rem', justifyContent: 'center' }}>
           {navLinks.map((l) => (
             <NavItem key={l.label} href={l.href} active={l.active}>

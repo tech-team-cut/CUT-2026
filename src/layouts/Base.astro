@@ -8,6 +8,7 @@ import {
 import { createPublicPageContext } from "emdash/page";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import { Header } from "../components/Header";
+import Brand from "../components/Brand/Brand.astro";
 import Footer from "./Footer.astro";
 import "../styles/global.css";
 
@@ -69,7 +70,9 @@ const pageCtx = createPublicPageContext({
 			}))}
 			ctaLabel="Convocatoria 2026"
 			ctaHref="/estudio/convocatoria"
-		/>
+		>
+			<Brand />
+		</Header>
 
 		<main>
 			<slot />
