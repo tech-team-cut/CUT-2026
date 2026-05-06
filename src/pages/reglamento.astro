@@ -1,0 +1,167 @@
+---
+import { getSiteSettings } from "emdash";
+import Base from "../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { Content } from "../content/reglamento.md";
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+---
+
+<Base
+  title={`Reglamento Interno — ${siteTitle}`}
+  description="Reglamento interno del Centro Universitario Tlacaélel. Disposiciones generales, derechos y obligaciones, régimen disciplinario y titulación."
+>
+  <div class="container">
+    <div class="doc-layout">
+      <aside class="doc-toc">
+        <div class="toc-label">Contenido</div>
+        <nav>
+          <a href="#misión">Misión</a>
+          <a href="#visión">Visión</a>
+          <a href="#título-i-disposiciones-generales">I. Disposiciones Generales</a>
+          <a href="#título-ii-ingreso">II. Ingreso</a>
+          <a href="#título-iii-promoción-y-permanencia">III. Promoción y Permanencia</a>
+          <a href="#título-iv">IV. Certificación y Titulación</a>
+          <a href="#título-v">V. Gestión Administrativa</a>
+          <a href="#título-vi-disposiciones-finales">VI. Disposiciones Finales</a>
+          <a href="#transitorios">Transitorios</a>
+        </nav>
+      </aside>
+      <article class="doc-body prose">
+        <Content />
+      </article>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .doc-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 5rem;
+    padding-block: var(--section-pad);
+    align-items: start;
+  }
+
+  /* TOC */
+  .doc-toc {
+    position: sticky;
+    top: calc(84px + 3rem);
+  }
+
+  .toc-label {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--secondary-soft);
+    margin-bottom: 1rem;
+  }
+
+  .doc-toc nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    border-left: 1px solid var(--outline-soft);
+    padding-left: 1rem;
+  }
+
+  .doc-toc nav a {
+    font-size: 0.8125rem;
+    color: var(--tertiary);
+    text-decoration: none;
+    line-height: 1.5;
+    transition: color 0.15s;
+  }
+
+  .doc-toc nav a:hover {
+    color: var(--secondary);
+  }
+
+  /* Prose */
+  .prose :global(h1) {
+    font-family: var(--serif);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 600;
+    color: var(--secondary);
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--outline-soft);
+  }
+
+  .prose :global(h2) {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--outline-soft);
+    scroll-margin-top: calc(84px + 3rem);
+  }
+
+  .prose :global(h3),
+  .prose :global(h4) {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    scroll-margin-top: calc(84px + 3rem);
+  }
+
+  .prose :global(p) {
+    font-size: 0.9375rem;
+    line-height: 1.8;
+    color: var(--tertiary);
+    margin-top: 1rem;
+  }
+
+  .prose :global(strong) {
+    color: var(--secondary);
+    font-weight: 600;
+  }
+
+  .prose :global(ol),
+  .prose :global(ul) {
+    margin-top: 1rem;
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .prose :global(li) {
+    font-size: 0.9375rem;
+    color: var(--tertiary);
+    line-height: 1.7;
+  }
+
+  .prose :global(hr) {
+    border: none;
+    border-top: 1px solid var(--outline-soft);
+    margin-block: 2.5rem;
+  }
+
+  .prose :global(em) {
+    color: var(--secondary-soft);
+    font-style: italic;
+  }
+
+
+  @media (max-width: 1024px) {
+    .doc-layout {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .doc-toc {
+      position: static;
+      display: none;
+    }
+  }
+</style>
