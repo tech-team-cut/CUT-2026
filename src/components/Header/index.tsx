@@ -4,8 +4,9 @@ import { UtilityBar } from '../UtilityBar'
 
 interface NavLink {
   label: string
-  href: string
+  href?: string
   active?: boolean
+  subLinks?: Array<{ label: string; href: string }>
 }
 
 interface HeaderProps {
@@ -15,27 +16,29 @@ interface HeaderProps {
   children?: React.ReactNode
 }
 
-const defaultNavLinks: NavLink[] = [
-  { label: 'Inicio', href: '#', active: true },
-  { label: 'Estudio', href: '#' },
-  { label: 'Noticias', href: '#' },
-  { label: 'Sobre nosotros', href: '#' },
-  { label: 'Bolsa de trabajo', href: '#' },
-]
-
-export function Header({ navLinks = defaultNavLinks, ctaLabel, ctaHref, children }: HeaderProps) {
+export function Header({ navLinks, ctaLabel, ctaHref, children }: HeaderProps) {
   return (
     <header style={{ position: 'sticky', top: 0, zIndex: 100 }}>
       <UtilityBar
         links={[
-          { label: 'Convocatoria 2026-1', href: '#' },
-          { label: 'Aula virtual', href: '#' },
-          { label: 'Servicios escolares', href: '#' },
+          { label: 'Convocatoria 2026-1', href: '/convocatoria' },
+          { label: 'Aula virtual', href: 'https://aula.cut.edu.mx' },
+          {
+            label: 'Servicios escolares',
+            href: '/servicios-escolares',
+            subLinks: [
+              { label: 'Trámites control escolar', href: '/servicios-escolares/tramites' },
+              { label: 'Titulación', href: '/servicios-escolares/titulacion' },
+              { label: 'Servicio social', href: '/servicios-escolares/servicio-social' },
+              { label: 'Biblioteca', href: '/servicios-escolares/biblioteca' },
+              { label: 'Becas', href: '/servicios-escolares/becas' },
+            ],
+          },
         ]}
         location="Estado de México"
         socialLinks={[
-          { platform: 'facebook', href: '#' },
-          { platform: 'instagram', href: '#' },
+          { platform: 'facebook', href: 'https://facebook.com/cutecatepec' },
+          { platform: 'instagram', href: 'https://instagram.com/cutecatepec' },
         ]}
       />
       <div
@@ -52,8 +55,8 @@ export function Header({ navLinks = defaultNavLinks, ctaLabel, ctaHref, children
       >
         {children}
         <nav style={{ display: 'flex', gap: '1.75rem', justifyContent: 'center' }}>
-          {navLinks.map((l) => (
-            <NavItem key={l.label} href={l.href} active={l.active}>
+          {navLinks?.map((l) => (
+            <NavItem key={l.label} href={l.href} active={l.active} subLinks={l.subLinks}>
               {l.label}
             </NavItem>
           ))}

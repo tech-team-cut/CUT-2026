@@ -5,8 +5,14 @@ interface SocialLink {
   href: string
 }
 
+interface UtilityLink {
+  label: string
+  href: string
+  subLinks?: Array<{ label: string; href: string }>
+}
+
 interface UtilityBarProps {
-  links: Array<{ label: string; href: string }>
+  links: UtilityLink[]
   location?: string
   socialLinks?: SocialLink[]
 }
@@ -32,7 +38,25 @@ export function UtilityBar({ links, location, socialLinks }: UtilityBarProps) {
         {links.map((l, i) => (
           <React.Fragment key={l.label}>
             {i > 0 && <span className="sep">/</span>}
-            <a href={l.href}>{l.label}</a>
+            {l.subLinks ? (
+              <div className="util-bar__dropdown">
+                <a href={l.href} className="util-bar__dropdown-trigger">
+                  {l.label}
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                    <path d="m9 18 6-6-6-6" />
+                  </svg>
+                </a>
+                <div className="util-bar__dropdown-panel">
+                  {l.subLinks.map((sub) => (
+                    <a key={sub.label} href={sub.href} className="util-bar__dropdown-item">
+                      {sub.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <a href={l.href}>{l.label}</a>
+            )}
           </React.Fragment>
         ))}
       </div>
