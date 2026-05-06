@@ -1,5 +1,5 @@
 ---
-import { getMenu, getSiteSettings } from "emdash";
+import { getSiteSettings } from "emdash";
 import {
 	EmDashHead,
 	EmDashBodyStart,
@@ -26,8 +26,6 @@ const { title, pageTitle, description, image, canonical, content } = Astro.props
 const { siteTitle, siteTagline, siteLogo } = resolveStarterSiteIdentity(await getSiteSettings());
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 const pageDescription = description ?? siteTagline;
-
-const menu = await getMenu("primary");
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -63,11 +61,31 @@ const pageCtx = createPublicPageContext({
 		<EmDashBodyStart page={pageCtx} />
 
 		<Header
-			navLinks={menu?.items.map(item => ({
-				label: item.label,
-				href: item.url,
-				active: Astro.url.pathname === item.url || (item.url === '/' && Astro.url.pathname === '/'),
-			}))}
+			navLinks={[
+				{ label: 'Inicio', href: '/', active: Astro.url.pathname === '/' },
+				{
+					label: 'Estudio',
+					active: Astro.url.pathname.startsWith('/estudio') || Astro.url.pathname.startsWith('/licenciaturas') || Astro.url.pathname.startsWith('/maestrias') || Astro.url.pathname.startsWith('/ejercicio-profesional'),
+					subLinks: [
+						{ label: 'Licenciaturas', href: '/licenciaturas' },
+						{ label: 'Maestrías', href: '/maestrias' },
+						{ label: 'Ejercicio Profesional', href: '/ejercicio-profesional' },
+					],
+				},
+				{ label: 'Noticias', href: '/posts', active: Astro.url.pathname.startsWith('/posts') },
+				{
+					label: 'Servicios escolares',
+					active: Astro.url.pathname.startsWith('/servicios-escolares'),
+					subLinks: [
+						{ label: 'Trámites control escolar', href: '/servicios-escolares/tramites' },
+						{ label: 'Titulación', href: '/servicios-escolares/titulacion' },
+						{ label: 'Servicio social', href: '/servicios-escolares/servicio-social', active: Astro.url.pathname === '/servicios-escolares/servicio-social' },
+						{ label: 'Biblioteca', href: '/servicios-escolares/biblioteca' },
+						{ label: 'Becas', href: '/servicios-escolares/becas' },
+					],
+				},
+				{ label: 'Sobre nosotros', href: '/sobre-nosotros', active: Astro.url.pathname.startsWith('/sobre-nosotros') },
+			]}
 			ctaLabel="Convocatoria 2026"
 			ctaHref="/estudio/convocatoria"
 		>
