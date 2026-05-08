@@ -1,0 +1,32 @@
+---
+interface Props {
+  node: { rows: string[] }
+}
+
+const { node } = Astro.props
+
+const parseCells = (row: string) =>
+  row.split('|').slice(1, -1).map(c => c.trim())
+
+const isSeparator = (row: string) => /^\|[\s\-|]+\|$/.test(row)
+
+const [headerRow, ...rest] = node.rows
+const bodyRows = rest.filter(r => !isSeparator(r))
+---
+
+<div class="prose-table-wrap">
+  <table class="prose-table">
+    <thead>
+      <tr>
+        {parseCells(headerRow).map(cell => <th>{cell}</th>)}
+      </tr>
+    </thead>
+    <tbody>
+      {bodyRows.map(row => (
+        <tr>
+          {parseCells(row).map(cell => <td>{cell}</td>)}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

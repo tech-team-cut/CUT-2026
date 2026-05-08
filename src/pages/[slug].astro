@@ -2,6 +2,8 @@
 import { Image, PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import { resolveEntryPage } from "../utils/resolve-entry-page";
+import MarkdownTable from "../components/MarkdownTable/index.astro";
+import ExternalLink from "../components/ExternalLink/index.astro";
 
 const result = await resolveEntryPage("pages", Astro.params.slug, Astro.url.origin, (s) => `/${s}`);
 if (!result.found) return Astro.redirect("/404");
@@ -9,6 +11,32 @@ Astro.cache.set(result.cacheHint);
 const { entry: page, seo, slug } = result;
 
 const image = (page.data as any).featured_image;
+
+function preprocessContent(blocks: any[]) {
+	const out: any[] = [];
+	let i = 0;
+	while (i < blocks.length) {
+		const b = blocks[i];
+		const text = (b?.children ?? []).map((c: any) => c.text ?? '').join('');
+		if (b._type === 'block' && text.trimStart().startsWith('|')) {
+			const rows: string[] = [];
+			while (i < blocks.length) {
+				const t = (blocks[i]?.children ?? []).map((c: any) => c.text ?? '').join('');
+				if (blocks[i]._type === 'block' && t.trimStart().startsWith('|')) {
+					rows.push(t.trim());
+					i++;
+				} else break;
+			}
+			out.push({ _type: 'markdownTable', _key: `table-${i}`, rows });
+		} else {
+			out.push(b);
+			i++;
+		}
+	}
+	return out;
+}
+
+const content = preprocessContent((page.data as any).content ?? []);
 ---
 
 <Base
@@ -38,7 +66,7 @@ const image = (page.data as any).featured_image;
 		<!-- Body -->
 		<div class="cms-page__body">
 			<div class="prose">
-				<PortableText value={page.data.content} />
+				<PortableText value={content} components={{ type: { markdownTable: MarkdownTable }, mark: { link: ExternalLink } }} />
 			</div>
 		</div>
 
