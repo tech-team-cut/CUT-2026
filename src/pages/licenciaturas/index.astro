@@ -25,7 +25,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas;
 	<!-- Hero -->
 	<div class="hero">
 		<div class="container">
-			<div class="page-hero">
+			<div class="hero-layout">
 				<div>
 					<span class="eyebrow">Oferta Educativa · Licenciaturas</span>
 					<h1 class="t-display-lg" style="margin-top:1rem;">Elige tu<br/><em>programa académico.</em></h1>
@@ -33,7 +33,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas;
 						Formación profesional con enfoque humanista, vinculada al entorno laboral y comprometida con el desarrollo regional.
 					</p>
 				</div>
-				<div class="page-hero-meta">
+				<div class="hero-layout-meta">
 					<div class="stat">
 						<div class="num">{licenciaturas.length}<sup>+</sup></div>
 						<div class="lbl">Licenciaturas</div>
@@ -122,14 +122,14 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas;
 </Base>
 
 <style>
-	.page-hero {
+	.hero-layout {
 		display: grid;
 		grid-template-columns: 1fr auto;
 		gap: 4rem;
 		align-items: end;
 	}
 
-	.page-hero-meta {
+	.hero-layout-meta {
 		display: flex;
 		gap: 2.5rem;
 		align-items: flex-end;
@@ -141,11 +141,11 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas;
 	}
 
 	@media (max-width: 768px) {
-		.page-hero {
+		.hero-layout {
 			grid-template-columns: 1fr;
 		}
 
-		.page-hero-meta {
+		.hero-layout-meta {
 			display: none;
 		}
 	}
