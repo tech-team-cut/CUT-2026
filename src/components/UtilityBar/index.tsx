@@ -15,6 +15,7 @@ interface UtilityBarProps {
   links: UtilityLink[]
   location?: string
   socialLinks?: SocialLink[]
+  locationLeft?: boolean
 }
 
 const FacebookIcon = () => (
@@ -31,37 +32,40 @@ const InstagramIcon = () => (
   </svg>
 )
 
-export function UtilityBar({ links, location, socialLinks }: UtilityBarProps) {
+export function UtilityBar({ links, location, socialLinks, locationLeft }: UtilityBarProps) {
   return (
     <div className="util-bar">
       <div className="util-bar__links">
-        {links.map((l, i) => (
-          <React.Fragment key={l.label}>
-            {i > 0 && <span className="sep">/</span>}
-            {l.subLinks ? (
-              <div className="util-bar__dropdown">
-                <a href={l.href} className="util-bar__dropdown-trigger">
-                  {l.label}
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
-                    <path d="m9 18 6-6-6-6" />
-                  </svg>
-                </a>
-                <div className="util-bar__dropdown-panel">
-                  {l.subLinks.map((sub) => (
-                    <a key={sub.label} href={sub.href} className="util-bar__dropdown-item">
-                      {sub.label}
-                    </a>
-                  ))}
+        {locationLeft && location
+          ? <a href="https://maps.app.goo.gl/8m1S2xpRFPzJgX6EA" target="_blank" rel="noopener noreferrer">📍 {location}</a>
+          : links.map((l, i) => (
+            <React.Fragment key={l.label}>
+              {i > 0 && <span className="sep">/</span>}
+              {l.subLinks ? (
+                <div className="util-bar__dropdown">
+                  <a href={l.href} className="util-bar__dropdown-trigger">
+                    {l.label}
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                      <path d="m9 18 6-6-6-6" />
+                    </svg>
+                  </a>
+                  <div className="util-bar__dropdown-panel">
+                    {l.subLinks.map((sub) => (
+                      <a key={sub.label} href={sub.href} className="util-bar__dropdown-item">
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <a href={l.href}>{l.label}</a>
-            )}
-          </React.Fragment>
-        ))}
+              ) : (
+                <a href={l.href}>{l.label}</a>
+              )}
+            </React.Fragment>
+          ))
+        }
       </div>
       <div className="util-bar__social">
-        {location && <span>📍 {location}</span>}
+        {!locationLeft && location && <span>📍 {location}</span>}
         {socialLinks?.map((s) => (
           <a key={s.platform} href={s.href} aria-label={s.platform}>
             {s.platform === 'facebook' ? <FacebookIcon /> : <InstagramIcon />}

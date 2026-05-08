@@ -1,9 +1,10 @@
 import React from 'react'
+import logoSrc from '../../assets/CUT - transparent.webp'
 
 export function Brand() {
   return (
     <a href="/" className="brand-row" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
-      <img src="/CUT - transparent.webp" alt="CUT" height={52} />
+      <img src={logoSrc.src} alt="CUT" height={52} />
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{
           fontFamily: 'var(--sans)',
