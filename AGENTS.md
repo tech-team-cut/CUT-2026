@@ -28,6 +28,7 @@ Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
 - **building-emdash-site** -- Querying content, rendering Portable Text, schema design, seed files, site features (menus, widgets, search, SEO, comments, bylines). Start here.
 - **creating-plugins** -- Building EmDash plugins with hooks, storage, admin UI, API routes, and Portable Text block types.
 - **emdash-cli** -- CLI commands for content management, seeding, type generation, and visual editing flow.
+- **cut-cms-pages** -- Edit CUT pages from the `pages` collection. Has known page index (slug→ID), edit flow, portableText table block format. Load this instead of emdash-cli when updating page content.
 
 ## Rules
 

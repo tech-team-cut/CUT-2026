@@ -1,29 +1,42 @@
 ---
-import { getEmDashEntry, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
-import { PortableText } from "emdash/ui";
+import { Image, PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { resolveEntryPage } from "../utils/resolve-entry-page";
+import MarkdownTable from "../components/MarkdownTable/index.astro";
+import ExternalLink from "../components/ExternalLink/index.astro";
 
-const slug = decodeSlug(Astro.params.slug);
+const result = await resolveEntryPage("pages", Astro.params.slug, Astro.url.origin, (s) => `/${s}`);
+if (!result.found) return Astro.redirect("/404");
+Astro.cache.set(result.cacheHint);
+const { entry: page, seo, slug } = result;
 
-if (!slug) {
-	return Astro.redirect("/404");
+const image = (page.data as any).featured_image;
+
+function preprocessContent(blocks: any[]) {
+	const out: any[] = [];
+	let i = 0;
+	while (i < blocks.length) {
+		const b = blocks[i];
+		const text = (b?.children ?? []).map((c: any) => c.text ?? '').join('');
+		if (b._type === 'block' && text.trimStart().startsWith('|')) {
+			const rows: string[] = [];
+			while (i < blocks.length) {
+				const t = (blocks[i]?.children ?? []).map((c: any) => c.text ?? '').join('');
+				if (blocks[i]._type === 'block' && t.trimStart().startsWith('|')) {
+					rows.push(t.trim());
+					i++;
+				} else break;
+			}
+			out.push({ _type: 'markdownTable', _key: `table-${i}`, rows });
+		} else {
+			out.push(b);
+			i++;
+		}
+	}
+	return out;
 }
 
-const { entry: page, cacheHint } = await getEmDashEntry("pages", slug);
-
-if (!page) {
-	return Astro.redirect("/404");
-}
-
-Astro.cache.set(cacheHint);
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
-
-const seo = getSeoMeta(page, {
-	siteTitle,
-	siteUrl: Astro.url.origin,
-	path: `/${slug}`,
-});
+const content = preprocessContent((page.data as any).content ?? []);
 ---
 
 <Base
@@ -33,9 +46,95 @@ const seo = getSeoMeta(page, {
 	canonical={seo.canonical}
 	content={{ collection: "pages", id: page.data.id, slug }}
 >
-	<article>
-		<h1 {...page.edit.title}>{page.data.title}</h1>
+	<div class="cms-page">
 
-		<PortableText value={page.data.content} />
-	</article>
+		<!-- Image first (if present) -->
+		{image && (
+			<div class="cms-page__image" {...(page.edit as any).featured_image}>
+				<Image image={image} />
+			</div>
+		)}
+
+		<!-- Title block -->
+		<div class="cms-page__header" class:list={[!image && 'cms-page__header--no-image']}>
+			<div class="cms-page__header-inner">
+				<a href="/" class="cms-page__back">← Inicio</a>
+				<h1 class="t-display-md" {...page.edit.title}>{page.data.title}</h1>
+			</div>
+		</div>
+
+		<!-- Body -->
+		<div class="cms-page__body">
+			<div class="prose">
+				<PortableText value={content} components={{ type: { markdownTable: MarkdownTable }, mark: { link: ExternalLink } }} />
+			</div>
+		</div>
+
+	</div>
 </Base>
+
+<style>
+	.cms-page {
+		padding-bottom: 5rem;
+	}
+
+	/* ── Image ── */
+	.cms-page__image {
+		width: 100%;
+		aspect-ratio: 21 / 9;
+		overflow: hidden;
+		background: var(--surface-container);
+	}
+
+	.cms-page__image :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	/* ── Title block ── */
+	.cms-page__header {
+		border-bottom: 1px solid var(--outline-soft);
+		padding: 2.5rem 0 2rem;
+	}
+
+	.cms-page__header--no-image {
+		padding-top: 4rem;
+		border-top: 3px solid var(--primary);
+	}
+
+	.cms-page__header-inner {
+		max-width: var(--container);
+		margin-inline: auto;
+		padding-inline: var(--margin);
+	}
+
+	.cms-page__back {
+		display: inline-block;
+		font-family: var(--sans);
+		font-size: 12px;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--primary);
+		text-decoration: none;
+		margin-bottom: 1.25rem;
+	}
+
+	.cms-page__back:hover {
+		text-decoration: underline;
+	}
+
+	.cms-page__header h1 {
+		margin: 0;
+	}
+
+	/* ── Body ── */
+	.cms-page__body {
+		max-width: var(--container);
+		margin-inline: auto;
+		padding-inline: var(--margin);
+		padding-top: 2.5rem;
+	}
+</style>

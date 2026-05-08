@@ -1,0 +1,32 @@
+---
+import { getEmDashEntry, getSiteSettings } from "emdash";
+import { PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const { entry: page, cacheHint } = await getEmDashEntry("pages", "ejercicio-profesional");
+Astro.cache.set(cacheHint);
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+---
+
+<Base
+	title={`${page?.data.title ?? 'Ejercicio Profesional'} — ${siteTitle}`}
+	description="Información sobre el ejercicio profesional, prácticas, vinculación con empresas y opciones de titulación."
+	content={{ collection: "pages", id: page?.data.id, slug: "ejercicio-profesional" }}
+>
+	<div class="page-hero">
+		<div class="container">
+			<span class="eyebrow">Estudio</span>
+			<h1 class="t-display-md">{page?.data.title ?? 'Ejercicio Profesional'}</h1>
+		</div>
+	</div>
+
+	<section class="section">
+		<div class="container">
+			<div class="prose">
+				{page?.data.content && <PortableText value={page.data.content} />}
+			</div>
+		</div>
+	</section>
+</Base>

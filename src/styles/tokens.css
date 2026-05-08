@@ -1,0 +1,46 @@
+/* ─── Fonts ─────────────────────────────────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* ─── Tokens ─────────────────────────────────────────────────────────────── */
+:root {
+  /* Surface scale */
+  --surface-bright: #ffffff;
+  --surface: #f7f9fb;
+  --surface-low: #f2f4f6;
+  --surface-container: #eceef0;
+  --surface-high: #e6e8ea;
+
+  /* On-surface */
+  --on-surface: #191c1e;
+  --on-surface-variant: #594042;
+
+  /* Borders — no shadows, hairline rule system */
+  --outline-soft: #d8dadc;
+  --outline-hair: #e1bec0;
+  --outline: #8d7071;
+
+  /* Brand */
+  --primary: #b21c3e;
+  --primary-deep: #91002c;
+  --primary-tint: #ffdadb;
+  --secondary: #0f172a;
+  --secondary-soft: #565e74;
+  --tertiary: #3a3a3a;
+  --accent-warm: #ffb2b8;
+
+  /* Typefaces */
+  --serif: "Newsreader", Georgia, serif;
+  --sans: "Public Sans", Helvetica, sans-serif;
+  --mono: "JetBrains Mono", monospace;
+
+  /* Spacing */
+  --section-pad: 5.5rem; /* 88px — between page sections */
+  --gutter: 1.5rem; /* 24px — column gaps */
+  --margin: 2rem; /* 32px — container horizontal inset */
+  --container: 1280px;
+
+  /* Border radii — minimal, architectural */
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+}

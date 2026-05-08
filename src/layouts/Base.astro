@@ -1,14 +1,14 @@
 ---
-import { getMenu, getSiteSettings } from "emdash";
+import { getSiteSettings } from "emdash";
 import {
-	WidgetArea,
 	EmDashHead,
 	EmDashBodyStart,
 	EmDashBodyEnd,
 } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import LiveSearch from "emdash/ui/search";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { Header } from "../components/Header";
+import Footer from "./Footer.astro";
 import "../styles/global.css";
 
 interface Props {
@@ -25,8 +25,6 @@ const { title, pageTitle, description, image, canonical, content } = Astro.props
 const { siteTitle, siteTagline, siteLogo } = resolveStarterSiteIdentity(await getSiteSettings());
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 const pageDescription = description ?? siteTagline;
-
-const menu = await getMenu("primary");
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -61,32 +59,43 @@ const pageCtx = createPublicPageContext({
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 
-		<header>
-			<nav>
-				<a href="/">
-					{siteLogo
-						? <img src={siteLogo.url} alt={siteLogo.alt || siteTitle} style="height:48px;width:auto;margin:-8px 0;display:block;" />
-						: siteTitle
-					}
-				</a>
+		<Header
+			client:load
+			locationLeft={Astro.url.pathname === '/'}
+			navLinks={[
+				{ label: 'Inicio', href: '/', active: Astro.url.pathname === '/' },
 				{
-					menu?.items.map((item) => (
-						<a href={item.url} target={item.target}>
-							{item.label}
-						</a>
-					))
-				}
-				<LiveSearch placeholder="Search..." collections={["posts", "pages"]} />
-			</nav>
-		</header>
+					label: 'Estudio',
+					active: Astro.url.pathname.startsWith('/estudio') || Astro.url.pathname.startsWith('/licenciaturas') || Astro.url.pathname.startsWith('/maestrias') || Astro.url.pathname.startsWith('/ejercicio-profesional'),
+					subLinks: [
+						{ label: 'Licenciaturas', href: '/licenciaturas' },
+						{ label: 'Maestrías', href: '/maestrias' },
+						{ label: 'Ejercicio Profesional', href: '/ejercicio-profesional' },
+					],
+				},
+				{ label: 'Noticias', href: '/posts', active: Astro.url.pathname.startsWith('/posts') },
+				{
+					label: 'Servicios escolares',
+					active: Astro.url.pathname.startsWith('/servicios-escolares') || Astro.url.pathname === '/servicio-social' || Astro.url.pathname === '/control-escolar' || Astro.url.pathname === '/titulacion' || Astro.url.pathname === '/biblioteca',
+					subLinks: [
+						{ label: 'Trámites control escolar', href: '/control-escolar', active: Astro.url.pathname === '/control-escolar' },
+						{ label: 'Titulación', href: '/titulacion', active: Astro.url.pathname === '/titulacion' },
+						{ label: 'Servicio social', href: '/servicio-social', active: Astro.url.pathname === '/servicio-social' },
+						{ label: 'Biblioteca', href: '/biblioteca', active: Astro.url.pathname === '/biblioteca' },
+						{ label: 'Becas', href: '/servicios-escolares/becas' },
+					],
+				},
+				{ label: 'Sobre nosotros', href: '/sobre-nosotros', active: Astro.url.pathname.startsWith('/sobre-nosotros') },
+			]}
+			ctaLabel="Convocatoria 2026"
+			ctaHref="/estudio/convocatoria"
+		/>
 
 		<main>
 			<slot />
 		</main>
 
-		<footer>
-			<WidgetArea name="sidebar" />
-		</footer>
+		<Footer />
 
 		<EmDashBodyEnd page={pageCtx} />
 	</body>
