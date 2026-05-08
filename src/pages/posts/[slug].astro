@@ -137,8 +137,7 @@ const hasImage = !!post.data.featured_image;
 
 /* ── Sticky card ─────────────────────────────── */
 .post-card {
-	position: sticky;
-	top: 2.5rem;
+	align-self: start;
 	background: var(--surface-bright);
 	border: 1px solid var(--outline-soft);
 	box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.04);
@@ -382,7 +381,7 @@ const hasImage = !!post.data.featured_image;
 
 /* ── Mobile ──────────────────────────────────── */
 @media (max-width: 860px) {
-	.post-page { padding: 0 0 3rem; }
+	.post-page { padding: 2rem 0 3rem; }
 
 	.post-grid {
 		grid-template-columns: 1fr;
@@ -401,6 +400,37 @@ const hasImage = !!post.data.featured_image;
 </style>
 
 <script>
+	// Sticky card via JS — CSS sticky breaks when EmDash adds overflow wrappers
+	(function () {
+		const card = document.querySelector('.post-card') as HTMLElement | null;
+		if (!card) return;
+
+		const STICKY_TOP = 84 + 24; // header height + gap
+		const MOBILE_BP = 860;
+
+		function updateSticky() {
+			if (window.innerWidth <= MOBILE_BP) {
+				card.style.transform = '';
+				return;
+			}
+			const grid = card.parentElement!;
+			const gridTop = grid.getBoundingClientRect().top;
+			const scrolled = STICKY_TOP - gridTop;
+
+			if (scrolled <= 0) {
+				card.style.transform = '';
+				return;
+			}
+
+			const maxOffset = grid.offsetHeight - card.offsetHeight - 24;
+			card.style.transform = `translateY(${Math.min(scrolled, Math.max(0, maxOffset))}px)`;
+		}
+
+		window.addEventListener('scroll', updateSticky, { passive: true });
+		window.addEventListener('resize', updateSticky, { passive: true });
+		updateSticky();
+	})();
+
 	const open = document.getElementById('open-lightbox');
 	const close = document.getElementById('close-lightbox');
 	const lightbox = document.getElementById('lightbox');
