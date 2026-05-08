@@ -1,53 +1,220 @@
 ---
-import { getEmDashCollection, getTermsForEntries } from "emdash";
-import { Image } from "emdash/ui";
+import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
+import { Image } from "emdash/ui";
+import NewsCard from "../../components/NewsCard/NewsCard.astro";
 
 const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
 	orderBy: { published_at: "desc" },
 });
 Astro.cache.set(cacheHint);
 
-// Single batched query for tags across every post, instead of calling
-// getEntryTerms() per post (which would be N round-trips).
-const tagsByEntry = await getTermsForEntries(
-	"posts",
-	posts.map((p) => p.data.id),
-	"tag",
-);
-const postsWithTags = posts.map((post) => ({
-	post,
-	tags: tagsByEntry.get(post.data.id) ?? [],
-}));
+const featured = posts[0];
+const rest = posts.slice(1);
+
+function fmtDate(d: string | Date | null | undefined) {
+	if (!d) return 'Reciente';
+	return new Date(d).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+}
 ---
 
-<Base title="All Posts">
-	<h1>Posts</h1>
+<Base
+	title="Noticias y avisos — CUT"
+	description="Convocatorias, resultados y eventos del Centro Universitario Tlacaélel."
+>
+	<!-- Masthead -->
+	<div class="posts-masthead">
+		<div class="container">
+			<div class="posts-masthead__inner">
+				<div>
+					<p class="t-mono">Centro Universitario Tlacaélel</p>
+					<h1 class="posts-masthead__title">Noticias<br/><em>&amp; Avisos</em></h1>
+				</div>
+				<p class="t-body-md posts-masthead__desc">
+					Convocatorias, resultados de exámenes,<br/>
+					eventos académicos y vida universitaria.
+				</p>
+			</div>
+			<hr class="posts-masthead__rule" />
+		</div>
+	</div>
 
-	{
-		postsWithTags.length === 0 ? (
-			<p>No posts yet.</p>
-		) : (
-			<ul>
-				{postsWithTags.map(({ post, tags }) => (
-					<li>
-						<a href={`/posts/${post.id}`}>
-							{post.data.featured_image && (
-								<Image image={post.data.featured_image} />
-							)}
-							<h2>{post.data.title}</h2>
-						</a>
-						{post.data.excerpt && <p>{post.data.excerpt}</p>}
-						{tags.length > 0 && (
-							<div>
-								{tags.map((t) => (
-									<a href={`/tag/${t.slug}`}>{t.label}</a>
-								))}
-							</div>
-						)}
-					</li>
-				))}
-			</ul>
-		)
-	}
+	{posts.length === 0 && (
+		<div class="container section">
+			<p class="t-body-md">No hay noticias publicadas.</p>
+		</div>
+	)}
+
+	<!-- Featured post -->
+	{featured && (
+		<div class="container">
+			<a href={`/posts/${featured.id}`} class="post-featured">
+				<div class="post-featured__img">
+					{featured.data.featured_image
+						? <Image image={featured.data.featured_image} />
+						: <div class="ph"></div>
+					}
+				</div>
+				<div class="post-featured__body">
+					<div class="date-badge"><span class="dot"></span>{fmtDate(featured.data.fecha_publicacion)}</div>
+					<h2 class="post-featured__title">{featured.data.title}</h2>
+					{featured.data.excerpt && (
+						<p class="t-body-md post-featured__excerpt">{featured.data.excerpt}</p>
+					)}
+					<span class="post-featured__cta">Leer nota →</span>
+				</div>
+			</a>
+		</div>
+	)}
+
+	<!-- Rest of posts -->
+	{rest.length > 0 && (
+		<section class="section section--low" style="margin-top:2rem;">
+			<div class="container">
+				<div class="posts-divider">
+					<span class="t-label-md">Más noticias</span>
+				</div>
+				<div class="news-grid" style="margin-top:1.75rem;">
+					{rest.map(post => (
+						<NewsCard
+							date={fmtDate(post.data.fecha_publicacion)}
+							title={post.data.title}
+							excerpt={post.data.excerpt}
+							href={`/posts/${post.id}`}
+							image={post.data.featured_image}
+							imageRatio="4:3"
+						/>
+					))}
+				</div>
+			</div>
+		</section>
+	)}
 </Base>
+
+<style>
+	/* Masthead */
+	.posts-masthead {
+		padding: 4rem 0 0;
+		background: var(--surface-bright);
+	}
+
+	.posts-masthead__inner {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+		gap: 2rem;
+	}
+
+	.posts-masthead__title {
+		font-family: var(--serif);
+		font-size: clamp(44px, 7vw, 80px);
+		font-weight: 600;
+		line-height: 0.95;
+		letter-spacing: -0.03em;
+		color: var(--secondary);
+		margin: 0.5rem 0 0;
+	}
+
+	.posts-masthead__title em {
+		font-style: italic;
+		font-weight: 500;
+		color: var(--primary);
+	}
+
+	.posts-masthead__desc {
+		max-width: 22rem;
+		text-align: right;
+		flex-shrink: 0;
+	}
+
+	.posts-masthead__rule {
+		border: none;
+		border-top: 1px solid var(--outline-soft);
+		margin: 2.5rem 0 0;
+	}
+
+	/* Featured */
+	.post-featured {
+		display: grid;
+		grid-template-columns: 1.1fr 1fr;
+		gap: 0;
+		border-bottom: 1px solid var(--outline-soft);
+		text-decoration: none;
+		padding: 2.5rem 0;
+		transition: opacity 0.15s;
+	}
+
+	.post-featured:hover {
+		opacity: 0.85;
+	}
+
+	.post-featured__img {
+		aspect-ratio: 4/3;
+		overflow: hidden;
+		background: var(--surface-container);
+	}
+
+	.post-featured__img :global(img),
+	.post-featured__img .ph {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.post-featured__body {
+		padding: 2rem 0 2rem 3rem;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	.post-featured__title {
+		font-family: var(--serif);
+		font-size: clamp(22px, 3vw, 32px);
+		font-weight: 600;
+		line-height: 1.15;
+		letter-spacing: -0.015em;
+		color: var(--secondary);
+		margin: 0;
+	}
+
+	.post-featured__excerpt {
+		margin: 0;
+		-webkit-line-clamp: 3;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.post-featured__cta {
+		font-family: var(--sans);
+		font-size: 13px;
+		font-weight: 600;
+		color: var(--primary);
+		letter-spacing: 0.02em;
+	}
+
+	/* Divider */
+	.posts-divider {
+		border-top: 1px solid var(--outline-soft);
+		padding-top: 1.5rem;
+	}
+
+	@media (max-width: 768px) {
+		.posts-masthead__inner {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.posts-masthead__desc {
+			text-align: left;
+		}
+		.post-featured {
+			grid-template-columns: 1fr;
+		}
+		.post-featured__body {
+			padding: 1.5rem 0 0;
+		}
+	}
+</style>

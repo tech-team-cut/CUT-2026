@@ -1,34 +1,31 @@
 ---
-import { getEmDashEntry, getEntryTerms, getSeoMeta, decodeSlug, getSiteSettings } from "emdash";
-import { Image, PortableText, WidgetArea } from "emdash/ui";
+import { getEntryTerms } from "emdash";
+import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import { resolveEntryPage } from "../../utils/resolve-entry-page";
 
-const slug = decodeSlug(Astro.params.slug);
+const result = await resolveEntryPage(
+	"posts",
+	Astro.params.slug,
+	Astro.url.origin,
+	(s) => `/posts/${s}`,
+);
+if (!result.found) return Astro.redirect("/404");
+Astro.cache.set(result.cacheHint);
+const { entry: post, seo, slug } = result;
 
-if (!slug) {
-	return Astro.redirect("/404");
-}
+const [tags, categories] = await Promise.all([
+	getEntryTerms("posts", post.data.id, "tag"),
+	getEntryTerms("posts", post.data.id, "category"),
+]);
 
-const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);
+const dateStr = post.data.fecha_publicacion
+	? new Date(post.data.fecha_publicacion).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' })
+	: post.data.publishedAt
+		? post.data.publishedAt.toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' })
+		: null;
 
-if (!post) {
-	return Astro.redirect("/404");
-}
-
-Astro.cache.set(cacheHint);
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
-
-// SEO meta from content fields
-const seo = getSeoMeta(post, {
-	siteTitle,
-	siteUrl: Astro.url.origin,
-	path: `/posts/${slug}`,
-});
-
-// Taxonomy terms for this post (use post.data.id, not post.id)
-const tags = await getEntryTerms("posts", post.data.id, "tag");
-const categories = await getEntryTerms("posts", post.data.id, "category");
+const hasImage = !!post.data.featured_image;
 ---
 
 <Base
@@ -39,53 +36,421 @@ const categories = await getEntryTerms("posts", post.data.id, "category");
 	image={seo.ogImage}
 	content={{ collection: "posts", id: post.data.id, slug }}
 >
-	<article>
-		{
-			post.data.featured_image && (
-				<div {...post.edit.featured_image}>
-					<Image image={post.data.featured_image} />
+
+<div class="post-page">
+	<div class="post-wrap">
+		<div class="post-grid">
+
+			<!-- ── Sticky card ── -->
+			<aside class="post-card">
+
+				<div class="post-card__meta">
+					<a href="/posts" class="post-card__back">← Noticias</a>
+
+					{categories.length > 0 && (
+						<div class="post-card__cats">
+							{categories.map(c => (
+								<a href={`/category/${c.slug}`} class="post-card__cat">{c.label}</a>
+							))}
+						</div>
+					)}
+
+					{dateStr && (
+						<div class="post-card__date">
+							<span class="post-card__date-rule"></span>
+							<time>{dateStr}</time>
+						</div>
+					)}
+
+					<h1 class="post-card__title" {...post.edit.title}>{post.data.title}</h1>
+
+					{post.data.excerpt && (
+						<p class="post-card__lede">{post.data.excerpt}</p>
+					)}
 				</div>
-			)
-		}
 
-		<h1 {...post.edit.title}>{post.data.title}</h1>
+				{hasImage && (
+					<div class="post-card__img" {...post.edit.featured_image}>
+						<Image image={post.data.featured_image} />
+						<button class="post-card__zoom" id="open-lightbox" aria-label="Ver imagen completa"></button>
+					</div>
+				)}
 
-		{
-			post.data.publishedAt && (
-				<time datetime={post.data.publishedAt.toISOString()}>
-					{post.data.publishedAt.toLocaleDateString("en-US", {
-						year: "numeric",
-						month: "long",
-						day: "numeric",
-					})}
-				</time>
-			)
-		}
+			</aside>
 
-		{
-			categories.length > 0 && (
-				<div>
-					{categories.map((c) => (
-						<a href={`/category/${c.slug}`}>{c.label}</a>
-					))}
+			<!-- ── Scrollable body ── -->
+			<div class="post-body">
+				<p class="post-body__label">— Artículo</p>
+
+				<div class="prose">
+					<PortableText value={post.data.content} />
 				</div>
-			)
-		}
 
-		<PortableText value={post.data.content} />
+				{tags.length > 0 && (
+					<footer class="post-footer">
+						<span class="post-footer__label">Etiquetas</span>
+						<div class="post-footer__tags">
+							{tags.map(t => (
+								<a href={`/tag/${t.slug}`} class="post-tag">{t.label}</a>
+							))}
+						</div>
+					</footer>
+				)}
+			</div>
 
-		{
-			tags.length > 0 && (
-				<div>
-					{tags.map((t) => (
-						<a href={`/tag/${t.slug}`}>{t.label}</a>
-					))}
-				</div>
-			)
-		}
-	</article>
+		</div>
+	</div>
+</div>
 
-	<aside>
-		<WidgetArea name="sidebar" />
-	</aside>
+{hasImage && (
+	<div class="lightbox" id="lightbox" aria-hidden="true">
+		<button class="lightbox__close" id="close-lightbox" aria-label="Cerrar">✕</button>
+		<div class="lightbox__img">
+			<Image image={post.data.featured_image} />
+		</div>
+	</div>
+)}
+
 </Base>
+
+<style>
+/* ── Page shell ──────────────────────────────── */
+.post-page {
+	background: var(--surface-low);
+	min-height: 100vh;
+	padding: 2.5rem 0 5rem;
+}
+
+.post-wrap {
+	max-width: 1240px;
+	margin-inline: auto;
+	padding-inline: var(--margin);
+}
+
+/* ── Two-column grid ─────────────────────────── */
+.post-grid {
+	display: grid;
+	grid-template-columns: 2fr 3fr;
+	gap: 2rem;
+	align-items: start;
+}
+
+/* ── Sticky card ─────────────────────────────── */
+.post-card {
+	align-self: start;
+	background: var(--surface-bright);
+	border: 1px solid var(--outline-soft);
+	box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.04);
+	overflow: hidden;
+}
+
+/* ── Card meta (top row) ─────────────────────── */
+.post-card__meta {
+	padding: 1.75rem 1.75rem 1.5rem;
+	border-bottom: 1px solid var(--outline-soft);
+}
+
+.post-card__back {
+	display: inline-block;
+	font-family: var(--mono);
+	font-size: 11px;
+	letter-spacing: 0.1em;
+	color: var(--secondary-soft);
+	text-decoration: none;
+	margin-bottom: 1.25rem;
+	transition: color 0.15s;
+}
+.post-card__back:hover { color: var(--primary); }
+
+.post-card__cats {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	margin-bottom: 0.75rem;
+}
+
+.post-card__cat {
+	font-family: var(--sans);
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--primary);
+	text-decoration: none;
+	background: var(--primary-tint);
+	padding: 3px 8px;
+	border-radius: 2px;
+	transition: opacity 0.15s;
+}
+.post-card__cat:hover { opacity: 0.7; }
+
+.post-card__date {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-bottom: 0.75rem;
+	font-family: var(--mono);
+	font-size: 10px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--secondary-soft);
+}
+
+.post-card__date-rule {
+	display: block;
+	width: 16px;
+	height: 1px;
+	background: var(--primary);
+	flex-shrink: 0;
+}
+
+.post-card__title {
+	font-family: var(--serif);
+	font-size: clamp(18px, 1.6vw, 26px);
+	font-weight: 600;
+	line-height: 1.1;
+	letter-spacing: -0.02em;
+	color: var(--secondary);
+	margin: 0 0 0.75rem;
+}
+
+.post-card__lede {
+	font-family: var(--serif);
+	font-size: clamp(12px, 0.95vw, 14px);
+	font-style: italic;
+	line-height: 1.55;
+	color: var(--secondary-soft);
+	margin: 0;
+}
+
+/* ── Card image ──────────────────────────────── */
+.post-card__img {
+	position: relative;
+	overflow: hidden;
+}
+
+.post-card__img :global(img) {
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.35s ease;
+}
+
+/* ── Zoom button — full image overlay ───────── */
+.post-card__zoom {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	background: transparent;
+	border: none;
+	cursor: zoom-in;
+	z-index: 10;
+	display: grid;
+	place-items: center;
+	transition: background 0.25s ease;
+}
+
+.post-card__zoom::after {
+	content: '⤢';
+	font-size: 22px;
+	color: #fff;
+	opacity: 0;
+	transform: scale(0.7);
+	transition: opacity 0.25s ease, transform 0.25s ease;
+	filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+}
+
+.post-card__zoom:hover {
+	background: rgba(10, 17, 36, 0.28);
+}
+
+.post-card__zoom:hover::after {
+	opacity: 1;
+	transform: scale(1);
+}
+
+.post-card__zoom:hover ~ :global(*),
+.post-card__img:has(.post-card__zoom:hover) :global(img) {
+	transform: scale(1.03);
+}
+
+/* ── Scrollable body ─────────────────────────── */
+.post-body {
+	padding-top: 0.25rem;
+}
+
+.post-body__label {
+	font-family: var(--mono);
+	font-size: 11px;
+	color: var(--primary);
+	letter-spacing: 0.1em;
+	margin: 0 0 1.5rem;
+	padding-bottom: 1.5rem;
+	border-bottom: 1px solid var(--outline);
+}
+
+/* ── Tags footer ─────────────────────────────── */
+.post-footer {
+	margin-top: 3rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--outline);
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.post-footer__label {
+	font-family: var(--sans);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--secondary-soft);
+}
+
+.post-footer__tags {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.post-tag {
+	font-family: var(--sans);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--secondary);
+	text-decoration: none;
+	padding: 4px 10px;
+	border: 1px solid var(--outline);
+	border-radius: 2px;
+	transition: border-color 0.1s, color 0.1s;
+}
+.post-tag:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Lightbox ────────────────────────────────── */
+.lightbox {
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,0.92);
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 4rem;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.2s;
+}
+.lightbox.is-open {
+	opacity: 1;
+	pointer-events: auto;
+}
+.lightbox__img {
+	max-width: 100%;
+	max-height: 90vh;
+	overflow: hidden;
+}
+.lightbox__img :global(img) {
+	max-width: 100%;
+	max-height: 90vh;
+	object-fit: contain;
+	display: block;
+}
+.lightbox__close {
+	position: absolute;
+	top: 1.25rem;
+	right: 1.25rem;
+	background: none;
+	border: 1px solid rgba(255,255,255,0.3);
+	color: #fff;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	font-size: 14px;
+	cursor: pointer;
+	display: grid;
+	place-items: center;
+	transition: border-color 0.15s;
+}
+.lightbox__close:hover { border-color: #fff; }
+
+/* ── Mobile ──────────────────────────────────── */
+@media (max-width: 860px) {
+	.post-page { padding: 2rem 0 3rem; }
+
+	.post-grid {
+		grid-template-columns: 1fr;
+		gap: 1.5rem;
+	}
+
+	.post-card {
+		position: relative;
+		top: 0;
+	}
+
+	.post-body {
+		padding-inline: 0;
+	}
+}
+</style>
+
+<script>
+	// Sticky card via JS — CSS sticky breaks when EmDash adds overflow wrappers
+	(function () {
+		const card = document.querySelector('.post-card') as HTMLElement | null;
+		if (!card) return;
+
+		const STICKY_TOP = 84 + 24; // header height + gap
+		const MOBILE_BP = 860;
+
+		function updateSticky() {
+			if (window.innerWidth <= MOBILE_BP) {
+				card.style.transform = '';
+				return;
+			}
+			const grid = card.parentElement!;
+			const gridTop = grid.getBoundingClientRect().top;
+			const scrolled = STICKY_TOP - gridTop;
+
+			if (scrolled <= 0) {
+				card.style.transform = '';
+				return;
+			}
+
+			const maxOffset = grid.offsetHeight - card.offsetHeight - 24;
+			card.style.transform = `translateY(${Math.min(scrolled, Math.max(0, maxOffset))}px)`;
+		}
+
+		window.addEventListener('scroll', updateSticky, { passive: true });
+		window.addEventListener('resize', updateSticky, { passive: true });
+		updateSticky();
+	})();
+
+	const open = document.getElementById('open-lightbox');
+	const close = document.getElementById('close-lightbox');
+	const lightbox = document.getElementById('lightbox');
+
+	open?.addEventListener('click', () => {
+		lightbox?.classList.add('is-open');
+		document.body.style.overflow = 'hidden';
+	});
+
+	const dismiss = () => {
+		lightbox?.classList.remove('is-open');
+		document.body.style.overflow = '';
+	};
+
+	close?.addEventListener('click', dismiss);
+	lightbox?.addEventListener('click', (e) => {
+		if (e.target === lightbox) dismiss();
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') dismiss();
+	});
+</script>
