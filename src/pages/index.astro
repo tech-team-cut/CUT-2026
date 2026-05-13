@@ -2,6 +2,7 @@
 import { getEmDashCollection, getSiteSettings } from "emdash"
 import Base from "../layouts/Base.astro"
 import { resolveStarterSiteIdentity } from "../utils/site-identity"
+import JsonLd from "../components/JsonLd.astro"
 import { SectionHeader } from "../components/SectionHeader"
 import { FeaturedAvisoCard } from "../components/FeaturedAvisoCard"
 import { ProgramCard } from "../components/ProgramCard"
@@ -31,6 +32,27 @@ const restLics = licenciaturas.filter(l => l.data.slug !== 'mercadotecnia')
 const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
 ---
 
+<JsonLd schema={{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "Centro Universitario Tlacaélel",
+  "alternateName": "CUT",
+  "url": "https://www.cut.com.mx",
+  "description": "Institución de educación superior comprometida con la justicia social, el pensamiento crítico y la formación integral.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "MX",
+    "addressLocality": "México"
+  },
+  "hasCredential": {
+    "@type": "EducationalOccupationalCredential",
+    "credentialCategory": "RVOE",
+    "recognizedBy": {
+      "@type": "GovernmentOrganization",
+      "name": "SEP"
+    }
+  }
+}} />
 <Base title={siteTitle} description={siteTagline}>
 
   <!-- Hero -->
