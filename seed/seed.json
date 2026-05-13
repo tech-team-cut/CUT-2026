@@ -15,7 +15,12 @@
 			"slug": "posts",
 			"label": "Noticias",
 			"labelSingular": "Noticia",
-			"supports": ["drafts", "revisions", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -52,7 +57,11 @@
 			"slug": "pages",
 			"label": "Páginas",
 			"labelSingular": "Página",
-			"supports": ["drafts", "revisions", "search"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"search"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -73,7 +82,12 @@
 			"slug": "licenciaturas",
 			"label": "Licenciaturas",
 			"labelSingular": "Licenciatura",
-			"supports": ["drafts", "revisions", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -135,7 +149,12 @@
 			"slug": "maestrias",
 			"label": "Maestrías",
 			"labelSingular": "Maestría",
-			"supports": ["drafts", "revisions", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -180,6 +199,21 @@
 					"slug": "active",
 					"label": "Activo",
 					"type": "boolean"
+				},
+				{
+					"slug": "curriculum",
+					"label": "Plan de Estudios (JSON)",
+					"type": "json"
+				},
+				{
+					"slug": "characteristics",
+					"label": "Características (JSON)",
+					"type": "json"
+				},
+				{
+					"slug": "order",
+					"label": "Orden",
+					"type": "integer"
 				}
 			]
 		},
@@ -187,7 +221,11 @@
 			"slug": "library_collections",
 			"label": "Acervos Bibliotecarios",
 			"labelSingular": "Acervo",
-			"supports": ["drafts", "revisions", "search"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"search"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -226,12 +264,26 @@
 			"label": "Categorías",
 			"labelSingular": "Categoría",
 			"hierarchical": true,
-			"collections": ["posts"],
+			"collections": [
+				"posts"
+			],
 			"terms": [
-				{ "slug": "institucional", "label": "Institucional" },
-				{ "slug": "academico", "label": "Académico" },
-				{ "slug": "cultural", "label": "Cultural" },
-				{ "slug": "convocatorias", "label": "Convocatorias" }
+				{
+					"slug": "institucional",
+					"label": "Institucional"
+				},
+				{
+					"slug": "academico",
+					"label": "Académico"
+				},
+				{
+					"slug": "cultural",
+					"label": "Cultural"
+				},
+				{
+					"slug": "convocatorias",
+					"label": "Convocatorias"
+				}
 			]
 		},
 		{
@@ -239,12 +291,27 @@
 			"label": "Áreas de conocimiento",
 			"labelSingular": "Área",
 			"hierarchical": false,
-			"collections": ["licenciaturas", "maestrias"],
+			"collections": [
+				"licenciaturas",
+				"maestrias"
+			],
 			"terms": [
-				{ "slug": "ciencias-sociales", "label": "Ciencias Sociales y Jurídicas" },
-				{ "slug": "ciencias-economico-admin", "label": "Ciencias Económico-Administrativas" },
-				{ "slug": "educacion", "label": "Educación y Humanidades" },
-				{ "slug": "comunicacion", "label": "Comunicación y Periodismo" }
+				{
+					"slug": "ciencias-sociales",
+					"label": "Ciencias Sociales y Jurídicas"
+				},
+				{
+					"slug": "ciencias-economico-admin",
+					"label": "Ciencias Económico-Administrativas"
+				},
+				{
+					"slug": "educacion",
+					"label": "Educación y Humanidades"
+				},
+				{
+					"slug": "comunicacion",
+					"label": "Comunicación y Periodismo"
+				}
 			]
 		}
 	],
@@ -253,32 +320,88 @@
 			"name": "primary",
 			"label": "Navegación principal",
 			"items": [
-				{ "type": "custom", "label": "Inicio", "url": "/" },
-				{ "type": "custom", "label": "Nosotros", "url": "/nosotros" },
-				{ "type": "custom", "label": "Estudio", "url": "/estudio/oferta-educativa" },
-				{ "type": "custom", "label": "Servicios Escolares", "url": "/servicios-escolares" },
-				{ "type": "custom", "label": "Biblioteca", "url": "/biblioteca" },
-				{ "type": "custom", "label": "Noticias", "url": "/noticias" }
+				{
+					"type": "custom",
+					"label": "Inicio",
+					"url": "/"
+				},
+				{
+					"type": "custom",
+					"label": "Nosotros",
+					"url": "/nosotros"
+				},
+				{
+					"type": "custom",
+					"label": "Estudio",
+					"url": "/estudio/oferta-educativa"
+				},
+				{
+					"type": "custom",
+					"label": "Servicios Escolares",
+					"url": "/servicios-escolares"
+				},
+				{
+					"type": "custom",
+					"label": "Biblioteca",
+					"url": "/biblioteca"
+				},
+				{
+					"type": "custom",
+					"label": "Noticias",
+					"url": "/noticias"
+				}
 			]
 		},
 		{
 			"name": "estudio",
 			"label": "Menú Estudio",
 			"items": [
-				{ "type": "custom", "label": "Oferta Educativa", "url": "/estudio/oferta-educativa" },
-				{ "type": "custom", "label": "Maestrías", "url": "/estudio/maestrias" },
-				{ "type": "custom", "label": "Convocatoria", "url": "/estudio/convocatoria" },
-				{ "type": "custom", "label": "Ejercicio Profesional", "url": "/estudio/ejercicio-profesional" }
+				{
+					"type": "custom",
+					"label": "Oferta Educativa",
+					"url": "/estudio/oferta-educativa"
+				},
+				{
+					"type": "custom",
+					"label": "Maestrías",
+					"url": "/estudio/maestrias"
+				},
+				{
+					"type": "custom",
+					"label": "Convocatoria",
+					"url": "/estudio/convocatoria"
+				},
+				{
+					"type": "custom",
+					"label": "Ejercicio Profesional",
+					"url": "/estudio/ejercicio-profesional"
+				}
 			]
 		},
 		{
 			"name": "footer",
 			"label": "Menú Footer",
 			"items": [
-				{ "type": "custom", "label": "Aviso de Privacidad", "url": "/aviso-de-privacidad" },
-				{ "type": "custom", "label": "Contacto", "url": "/contacto" },
-				{ "type": "custom", "label": "Servicios Escolares", "url": "/servicios-escolares" },
-				{ "type": "custom", "label": "Biblioteca", "url": "/biblioteca" }
+				{
+					"type": "custom",
+					"label": "Aviso de Privacidad",
+					"url": "/aviso-de-privacidad"
+				},
+				{
+					"type": "custom",
+					"label": "Contacto",
+					"url": "/contacto"
+				},
+				{
+					"type": "custom",
+					"label": "Servicios Escolares",
+					"url": "/servicios-escolares"
+				},
+				{
+					"type": "custom",
+					"label": "Biblioteca",
+					"url": "/biblioteca"
+				}
 			]
 		}
 	],
@@ -307,35 +430,75 @@
 						"semesters": [
 							{
 								"label": "Primer Semestre",
-								"subjects": ["Introducción a la AP", "Derecho Constitucional", "Microeconomía", "Teoría Política"]
+								"subjects": [
+									"Introducción a la AP",
+									"Derecho Constitucional",
+									"Microeconomía",
+									"Teoría Política"
+								]
 							},
 							{
 								"label": "Segundo Semestre",
-								"subjects": ["Macroeconomía", "Derecho Administrativo", "Estadística Social", "Sociología Urbana"]
+								"subjects": [
+									"Macroeconomía",
+									"Derecho Administrativo",
+									"Estadística Social",
+									"Sociología Urbana"
+								]
 							},
 							{
 								"label": "Tercer Semestre",
-								"subjects": ["Políticas Públicas I", "Hacienda Pública", "Gestión Local", "Métodos Cualitativos"]
+								"subjects": [
+									"Políticas Públicas I",
+									"Hacienda Pública",
+									"Gestión Local",
+									"Métodos Cualitativos"
+								]
 							},
 							{
 								"label": "Cuarto Semestre",
-								"subjects": ["Ética Pública", "Derecho Laboral", "Comunicación Política", "Sistemas Electorales"]
+								"subjects": [
+									"Ética Pública",
+									"Derecho Laboral",
+									"Comunicación Política",
+									"Sistemas Electorales"
+								]
 							},
 							{
 								"label": "Quinto Semestre",
-								"subjects": ["Políticas Públicas II", "Presupuesto por Resultados", "Gobierno Electrónico", "Derecho Humano"]
+								"subjects": [
+									"Políticas Públicas II",
+									"Presupuesto por Resultados",
+									"Gobierno Electrónico",
+									"Derecho Humano"
+								]
 							},
 							{
 								"label": "Sexto Semestre",
-								"subjects": ["Gestión del Capital Humano", "Evaluación de Programas", "Transparencia y Acceso", "Desarrollo Sustentable"]
+								"subjects": [
+									"Gestión del Capital Humano",
+									"Evaluación de Programas",
+									"Transparencia y Acceso",
+									"Desarrollo Sustentable"
+								]
 							},
 							{
 								"label": "Séptimo Semestre",
-								"subjects": ["Auditoría Gubernamental", "Seminario de Tesis I", "Planeación del Desarrollo", "Gestión de Riesgos"]
+								"subjects": [
+									"Auditoría Gubernamental",
+									"Seminario de Tesis I",
+									"Planeación del Desarrollo",
+									"Gestión de Riesgos"
+								]
 							},
 							{
 								"label": "Octavo Semestre",
-								"subjects": ["Seminario de Tesis II", "Práctica Profesional", "Liderazgo Público", "Taller de Titulación"]
+								"subjects": [
+									"Seminario de Tesis II",
+									"Práctica Profesional",
+									"Liderazgo Público",
+									"Taller de Titulación"
+								]
 							}
 						]
 					},
@@ -344,11 +507,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Administración Pública forma profesionistas con sólida preparación en gestión gubernamental, políticas públicas y administración de organismos públicos y privados." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Administración Pública forma profesionistas con sólida preparación en gestión gubernamental, políticas públicas y administración de organismos públicos y privados."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["ciencias-economico-admin"] }
+				"taxonomies": {
+					"area": [
+						"ciencias-economico-admin"
+					]
+				}
 			},
 			{
 				"id": "contaduria",
@@ -366,11 +539,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Contaduría forma especialistas en contabilidad, auditoría, finanzas and fiscalidad con capacidad de gestión financiera en empresas e instituciones." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Contaduría forma especialistas en contabilidad, auditoría, finanzas and fiscalidad con capacidad de gestión financiera en empresas e instituciones."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["ciencias-economico-admin"] }
+				"taxonomies": {
+					"area": [
+						"ciencias-economico-admin"
+					]
+				}
 			},
 			{
 				"id": "derecho",
@@ -388,11 +571,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Derecho forma abogados con dominio del sistema jurídico mexicano y habilidades para el litigio, la consultoría y la función pública." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Derecho forma abogados con dominio del sistema jurídico mexicano y habilidades para el litigio, la consultoría y la función pública."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["ciencias-sociales"] }
+				"taxonomies": {
+					"area": [
+						"ciencias-sociales"
+					]
+				}
 			},
 			{
 				"id": "psicopedagogia",
@@ -410,11 +603,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Psicopedagogía integra conocimientos de psicología y pedagogía para el diagnóstico, orientación e intervención en procesos de aprendizaje en contextos educativos y clínicos." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Psicopedagogía integra conocimientos de psicología y pedagogía para el diagnóstico, orientación e intervención en procesos de aprendizaje en contextos educativos y clínicos."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["educacion"] }
+				"taxonomies": {
+					"area": [
+						"educacion"
+					]
+				}
 			},
 			{
 				"id": "pedagogia",
@@ -432,11 +635,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Pedagogía forma especialistas en educación con capacidades para diseñar, implementar y evaluar programas formativos en instituciones educativas, empresas y organismos sociales." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Pedagogía forma especialistas en educación con capacidades para diseñar, implementar y evaluar programas formativos en instituciones educativas, empresas y organismos sociales."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["educacion"] }
+				"taxonomies": {
+					"area": [
+						"educacion"
+					]
+				}
 			},
 			{
 				"id": "periodismo-y-comunicacion",
@@ -454,11 +667,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Periodismo y Comunicación forma profesionistas con habilidades en periodismo, comunicación organizacional, producción multimedia y ética informativa." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Periodismo y Comunicación forma profesionistas con habilidades en periodismo, comunicación organizacional, producción multimedia y ética informativa."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["comunicacion"] }
+				"taxonomies": {
+					"area": [
+						"comunicacion"
+					]
+				}
 			},
 			{
 				"id": "mercadotecnia",
@@ -476,11 +699,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Licenciatura en Mercadotecnia — nueva oferta 2026 — forma estrategas con dominio del marketing digital, analítica de datos, branding y comportamiento del consumidor." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Licenciatura en Mercadotecnia — nueva oferta 2026 — forma estrategas con dominio del marketing digital, analítica de datos, branding y comportamiento del consumidor."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["ciencias-economico-admin"] }
+				"taxonomies": {
+					"area": [
+						"ciencias-economico-admin"
+					]
+				}
 			}
 		],
 		"maestrias": [
@@ -499,17 +732,33 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Maestría en Ciencias de la Educación es un posgrado de cuatro semestres con desarrollo semestral en modalidad modular y mixta, integrado por 14 materias obligatorias y 2 optativas." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Maestría en Ciencias de la Educación es un posgrado de cuatro semestres con desarrollo semestral en modalidad modular y mixta, integrado por 14 materias obligatorias y 2 optativas."
+								}
+							]
 						},
 						{
 							"_type": "block",
 							"style": "normal",
 							"_key": "k2",
-							"children": [{ "_type": "span", "_key": "k3", "text": "Dirigida a profesionistas en ejercicio que buscan fortalecer sus competencias en investigación educativa, gestión institucional y docencia de calidad." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k3",
+									"text": "Dirigida a profesionistas en ejercicio que buscan fortalecer sus competencias en investigación educativa, gestión institucional y docencia de calidad."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["educacion"] }
+				"taxonomies": {
+					"area": [
+						"educacion"
+					]
+				}
 			},
 			{
 				"id": "derecho-penal",
@@ -525,11 +774,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Maestría en Derecho Penal profundiza en el sistema penal acusatorio mexicano, técnicas de litigación oral, criminalística y derechos humanos." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Maestría en Derecho Penal profundiza en el sistema penal acusatorio mexicano, técnicas de litigación oral, criminalística y derechos humanos."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["ciencias-sociales"] }
+				"taxonomies": {
+					"area": [
+						"ciencias-sociales"
+					]
+				}
 			},
 			{
 				"id": "administracion-publica-maestria",
@@ -545,11 +804,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Maestría en Administración Pública forma especialistas en gestión gubernamental, diseño de políticas públicas, evaluación de programas y modernización del Estado." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Maestría en Administración Pública forma especialistas en gestión gubernamental, diseño de políticas públicas, evaluación de programas y modernización del Estado."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["ciencias-economico-admin"] }
+				"taxonomies": {
+					"area": [
+						"ciencias-economico-admin"
+					]
+				}
 			},
 			{
 				"id": "formacion-academica",
@@ -565,11 +834,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Maestría en Formación Académica está dirigida a docentes en activo que buscan profundizar en didáctica, diseño curricular y gestión educativa." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Maestría en Formación Académica está dirigida a docentes en activo que buscan profundizar en didáctica, diseño curricular y gestión educativa."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "area": ["educacion"] }
+				"taxonomies": {
+					"area": [
+						"educacion"
+					]
+				}
 			}
 		],
 		"pages": [
@@ -584,7 +863,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "El Centro Universitario Tlacaelel es una institución de educación superior comprometida con la formación integral de sus estudiantes bajo el lema Liberar Educando." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "El Centro Universitario Tlacaelel es una institución de educación superior comprometida con la formación integral de sus estudiantes bajo el lema Liberar Educando."
+								}
+							]
 						}
 					]
 				}
@@ -600,7 +885,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Consulta los requisitos y fechas del proceso de admisión. Para más información escríbenos a calidadeducativa@cut.com.mx" }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Consulta los requisitos y fechas del proceso de admisión. Para más información escríbenos a calidadeducativa@cut.com.mx"
+								}
+							]
 						}
 					]
 				}
@@ -616,7 +907,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Información sobre el proceso de ejercicio profesional, titulación y trámites de certificación." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Información sobre el proceso de ejercicio profesional, titulación y trámites de certificación."
+								}
+							]
 						}
 					]
 				}
@@ -632,7 +929,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Requisitos y procedimientos para la obtención del título profesional." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Requisitos y procedimientos para la obtención del título profesional."
+								}
+							]
 						}
 					]
 				}
@@ -648,7 +951,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Información sobre el programa de servicio social: requisitos, convenios y procedimientos de registro." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Información sobre el programa de servicio social: requisitos, convenios y procedimientos de registro."
+								}
+							]
 						}
 					]
 				}
@@ -664,7 +973,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Trámites escolares: reinscripciones, constancias, historial académico y certificados de estudios." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Trámites escolares: reinscripciones, constancias, historial académico y certificados de estudios."
+								}
+							]
 						}
 					]
 				}
@@ -680,7 +995,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Conoce la historia, misión y visión del Centro Universitario Tlacaelel." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Conoce la historia, misión y visión del Centro Universitario Tlacaelel."
+								}
+							]
 						}
 					]
 				}
@@ -696,7 +1017,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Reglamento institucional del Centro Universitario Tlacaelel." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Reglamento institucional del Centro Universitario Tlacaelel."
+								}
+							]
 						}
 					]
 				}
@@ -712,7 +1039,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Programa de alfabetización y extensión comunitaria del CUT." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Programa de alfabetización y extensión comunitaria del CUT."
+								}
+							]
 						}
 					]
 				}
@@ -728,7 +1061,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Galería fotográfica de eventos, instalaciones y vida universitaria del CUT." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Galería fotográfica de eventos, instalaciones y vida universitaria del CUT."
+								}
+							]
 						}
 					]
 				}
@@ -744,7 +1083,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Accede a los servicios y acervos de la Biblioteca del Centro Universitario Tlacaelel." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Accede a los servicios y acervos de la Biblioteca del Centro Universitario Tlacaelel."
+								}
+							]
 						}
 					]
 				}
@@ -760,7 +1105,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Información sobre el programa de ejercicio profesional docente: requisitos, modalidades y procedimientos." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Información sobre el programa de ejercicio profesional docente: requisitos, modalidades y procedimientos."
+								}
+							]
 						}
 					]
 				}
@@ -776,7 +1127,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "Servicios escolares: inscripciones, reinscripciones, trámites de titulación y certificados." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "Servicios escolares: inscripciones, reinscripciones, trámites de titulación y certificados."
+								}
+							]
 						}
 					]
 				}
@@ -796,11 +1153,21 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "El CUT presenta su nueva plataforma institucional con información completa sobre licenciaturas, maestrías, servicios escolares y biblioteca." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "El CUT presenta su nueva plataforma institucional con información completa sobre licenciaturas, maestrías, servicios escolares y biblioteca."
+								}
+							]
 						}
 					]
 				},
-				"taxonomies": { "category": ["institucional"] }
+				"taxonomies": {
+					"category": [
+						"institucional"
+					]
+				}
 			}
 		],
 		"library_collections": [
@@ -817,7 +1184,13 @@
 							"_type": "block",
 							"style": "normal",
 							"_key": "k0",
-							"children": [{ "_type": "span", "_key": "k1", "text": "La Biblioteca Virtual del CUT ofrece acceso a recursos académicos digitales, bases de datos especializadas y repositorios de libre acceso." }]
+							"children": [
+								{
+									"_type": "span",
+									"_key": "k1",
+									"text": "La Biblioteca Virtual del CUT ofrece acceso a recursos académicos digitales, bases de datos especializadas y repositorios de libre acceso."
+								}
+							]
 						}
 					]
 				}
