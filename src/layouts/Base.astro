@@ -61,7 +61,6 @@ const pageCtx = createPublicPageContext({
 
 		<Header
 			client:load
-			locationLeft={Astro.url.pathname === '/'}
 			navLinks={[
 				{ label: 'Inicio', href: '/', active: Astro.url.pathname === '/' },
 				{
@@ -85,7 +84,6 @@ const pageCtx = createPublicPageContext({
 						{ label: 'Becas', href: '/servicios-escolares/becas' },
 					],
 				},
-				{ label: 'Sobre nosotros', href: '/sobre-nosotros', active: Astro.url.pathname.startsWith('/sobre-nosotros') },
 			]}
 			ctaLabel="Convocatoria 2026"
 			ctaHref="/estudio/convocatoria"

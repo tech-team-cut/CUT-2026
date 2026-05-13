@@ -44,7 +44,7 @@ const curriculum = (program.data as any).curriculum;
 						</p>
 					)}
 					<div class="hero-cta">
-						<Button variant="primary" href="/estudio/convocatoria">Solicitar información</Button>
+						<Button variant="primary" href="/convocatoria">Solicitar información</Button>
 						<Button variant="dark-border" href="#plan-estudios">Ver plan de estudios</Button>
 					</div>
 				</div>
@@ -120,6 +120,7 @@ const curriculum = (program.data as any).curriculum;
 
 	<!-- Sidebar -->
 	<Fragment slot="sidebar">
+		<div class="sidebar-sticky">
 		<div class="sidebar-card">
 			<h3 class="t-headline-sm">¿Por qué este posgrado en CUT?</h3>
 			<ul class="benefit-list">
@@ -128,7 +129,7 @@ const curriculum = (program.data as any).curriculum;
 				<li>Infraestructura especializada para tu área.</li>
 				<li>Excelencia académica a costos accesibles.</li>
 			</ul>
-			<Button variant="primary" href="/estudio/convocatoria" className="w-full">
+			<Button variant="primary" href="/convocatoria" className="w-full">
 				Iniciar proceso de admisión
 			</Button>
 		</div>
@@ -139,6 +140,7 @@ const curriculum = (program.data as any).curriculum;
 				<span class="acred-badge">SEP</span>
 				<span class="acred-badge">RVOE</span>
 			</div>
+		</div>
 		</div>
 	</Fragment>
 
@@ -183,8 +185,8 @@ const curriculum = (program.data as any).curriculum;
 						Amplía tu formación profesional con un programa de excelencia académica, reconocido por la SEP y diseñado para el ejercicio avanzado de tu disciplina.
 					</p>
 					<div class="cta-actions">
-						<Button variant="primary" href="/estudio/admision">Ver requisitos de admisión</Button>
-						<Button variant="dark-border" href="/estudio/convocatoria">Convocatoria 2026</Button>
+						<Button variant="primary" href="/convocatoria">Ver requisitos de admisión</Button>
+						<Button variant="dark-border" href="/convocatoria">Convocatoria 2026</Button>
 					</div>
 				</div>
 				<div class="cta-divider" aria-hidden="true"></div>
@@ -313,12 +315,15 @@ const curriculum = (program.data as any).curriculum;
 	}
 
 	/* ── Sidebar ── */
+	.sidebar-sticky {
+		position: sticky;
+		top: calc(84px + 4rem);
+	}
+
 	.sidebar-card {
 		background: var(--surface-bright);
 		border: 1px solid var(--outline-soft);
 		padding: 2rem;
-		position: sticky;
-		top: calc(84px + 4rem);
 	}
 
 	.benefit-list {
