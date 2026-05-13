@@ -65,7 +65,7 @@ const pageCtx = createPublicPageContext({
 				{ label: 'Inicio', href: '/', active: Astro.url.pathname === '/' },
 				{
 					label: 'Estudio',
-					active: Astro.url.pathname.startsWith('/estudio') || Astro.url.pathname.startsWith('/licenciaturas') || Astro.url.pathname.startsWith('/maestrias') || Astro.url.pathname.startsWith('/ejercicio-profesional'),
+					active: Astro.url.pathname.startsWith('/licenciaturas') || Astro.url.pathname.startsWith('/maestrias') || Astro.url.pathname.startsWith('/ejercicio-profesional'),
 					subLinks: [
 						{ label: 'Licenciaturas', href: '/licenciaturas' },
 						{ label: 'Maestrías', href: '/maestrias' },
@@ -86,7 +86,7 @@ const pageCtx = createPublicPageContext({
 				},
 			]}
 			ctaLabel="Convocatoria 2026"
-			ctaHref="/estudio/convocatoria"
+			ctaHref="/convocatoria"
 		/>
 
 		<main>
