@@ -5,6 +5,7 @@ import { SectionHeader } from "../../components/SectionHeader";
 import { CurriculumGrid } from "../../components/CurriculumGrid";
 import { Button } from "../../components/Button";
 import { resolveEntryPage } from "../../utils/resolve-entry-page";
+import JsonLd from "../../components/JsonLd.astro";
 
 const result = await resolveEntryPage(
 	"maestrias",
@@ -20,10 +21,22 @@ const chars = (program.data as any).characteristics;
 const curriculum = (program.data as any).curriculum;
 ---
 
+<JsonLd schema={{
+	"@context": "https://schema.org",
+	"@type": "Course",
+	"name": program.data.title,
+	"description": program.data.excerpt ?? seo.description,
+	"provider": {
+		"@type": "EducationalOrganization",
+		"name": "Centro Universitario Tlacaélel",
+		"url": "https://www.cut.com.mx"
+	}
+}} />
 <ProgramDetail
 	title={seo.title}
 	pageTitle={seo.ogTitle}
 	description={seo.description}
+	image={seo.ogImage}
 	canonical={seo.canonical}
 	collection="maestrias"
 	entryId={program.id}
