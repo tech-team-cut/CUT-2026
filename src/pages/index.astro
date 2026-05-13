@@ -11,6 +11,19 @@ import { Button } from "../components/Button"
 import { Image } from "astro:assets"
 import talleres from "../assets/talleres.webp"
 import beneficios from "../assets/beneficios.webp"
+import type { ImageMetadata } from "astro"
+
+const campusModules = import.meta.glob<{ default: ImageMetadata }>("../assets/campus/*.{webp,jpg,jpeg,png}", { eager: true })
+const campusImages = Object.values(campusModules).map(m => m.default)
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+const galleryImages = shuffle(campusImages).slice(0, 7)
 
 const [
   { entries: licenciaturas, cacheHint: ch1 },
@@ -238,18 +251,10 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
     <div class="container">
       <SectionHeader num="— 04" title="Vida universitaria." description="Campus, actividades culturales, deportivas y vida cotidiana en CUT." />
       <div class="gallery-grid">
-        {[
-          "/_emdash/api/media/file/01KR20XPZ87GW7VRF04NQJ660C.webp",
-          "/_emdash/api/media/file/01KR20XPZ8PT9QT1JFV7PKC4ZM.webp",
-          "/_emdash/api/media/file/01KR20XPY7H7N9TTSPGAM5H8TK.webp",
-          "/_emdash/api/media/file/01KR20XPXXV10RG2CFSNKKJGKN.webp",
-          "/_emdash/api/media/file/01KR20XPTBB5BFW0XKHWET3XFR.jpg",
-          "/_emdash/api/media/file/01KR20XPTBT5VQFH2AF5045YN1.webp",
-          "/_emdash/api/media/file/01KR20XPTB74CEH5RS3TFE3XG9.webp",
-        ].map((src, i) => (
+        {galleryImages.map((img, i) => (
           <div class={`gallery-item g${i + 1}`}>
-            <img src={src} alt="Vida universitaria CUT" />
-            <button class="gallery-zoom" data-src={src} aria-label="Ver imagen completa"></button>
+            <Image src={img} alt="Vida universitaria CUT" />
+            <button class="gallery-zoom" aria-label="Ver imagen completa"></button>
           </div>
         ))}
       </div>
@@ -343,7 +348,10 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
   };
 
   document.querySelectorAll<HTMLButtonElement>('.gallery-zoom').forEach(btn => {
-    btn.addEventListener('click', () => open(btn.dataset.src!));
+    btn.addEventListener('click', () => {
+      const img = btn.closest('.gallery-item')?.querySelector('img');
+      if (img) open(img.currentSrc || img.src);
+    });
   });
 
   closeBtn?.addEventListener('click', dismiss);
