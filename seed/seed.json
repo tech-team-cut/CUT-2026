@@ -8,7 +8,8 @@
 	},
 	"settings": {
 		"title": "CUT — Centro Universitario Tlacaelel",
-		"tagline": "— Liberar Educando"
+		"tagline": "Educación superior comprometida con la justicia social, el pensamiento crítico y la formación integral. RVOE SEP.",
+		"url": "https://www.cut.com.mx"
 	},
 	"collections": [
 		{
@@ -60,7 +61,8 @@
 			"supports": [
 				"drafts",
 				"revisions",
-				"search"
+				"search",
+				"seo"
 			],
 			"fields": [
 				{
@@ -254,6 +256,47 @@
 					"slug": "collection_type",
 					"label": "Tipo",
 					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "announcements",
+			"label": "Anuncios",
+			"labelSingular": "Anuncio",
+			"supports": [
+				"drafts"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Título",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "cta_label",
+					"label": "Texto del CTA",
+					"type": "string"
+				},
+				{
+					"slug": "cta_href",
+					"label": "URL del CTA",
+					"type": "string"
+				},
+				{
+					"slug": "start_date",
+					"label": "Fecha inicio",
+					"type": "datetime"
+				},
+				{
+					"slug": "end_date",
+					"label": "Fecha fin",
+					"type": "datetime"
+				},
+				{
+					"slug": "image",
+					"label": "Imagen",
+					"type": "image"
 				}
 			]
 		}
