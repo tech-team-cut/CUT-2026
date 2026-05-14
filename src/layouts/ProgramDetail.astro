@@ -5,19 +5,21 @@ interface Props {
 	title: string;
 	pageTitle?: string | null;
 	description?: string | null;
+	image?: string | null;
 	canonical?: string | null;
 	collection: string;
 	entryId: string;
 	slug: string;
 }
 
-const { title, pageTitle, description, canonical, collection, entryId, slug } = Astro.props;
+const { title, pageTitle, description, image, canonical, collection, entryId, slug } = Astro.props;
 ---
 
 <Base
 	title={title}
 	pageTitle={pageTitle}
 	description={description}
+	image={image}
 	canonical={canonical}
 	content={{ collection, id: entryId, slug }}
 >

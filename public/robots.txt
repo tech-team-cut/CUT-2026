@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /_emdash/
+
+Sitemap: https://www.cut.com.mx/sitemap.xml
