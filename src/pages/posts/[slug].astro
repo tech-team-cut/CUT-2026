@@ -3,6 +3,7 @@ import { getEntryTerms } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { resolveEntryPage } from "../../utils/resolve-entry-page";
+import JsonLd from "../../components/JsonLd.astro";
 
 const result = await resolveEntryPage(
 	"posts",
@@ -28,6 +29,18 @@ const dateStr = post.data.fecha_publicacion
 const hasImage = !!post.data.featured_image;
 ---
 
+<JsonLd schema={{
+	"@context": "https://schema.org",
+	"@type": "NewsArticle",
+	"headline": post.data.title,
+	"description": post.data.excerpt ?? seo.description,
+	"datePublished": post.data.fecha_publicacion ?? post.data.publishedAt?.toISOString(),
+	"publisher": {
+		"@type": "Organization",
+		"name": "Centro Universitario Tlacaélel",
+		"url": "https://www.cut.com.mx"
+	}
+}} />
 <Base
 	title={seo.title}
 	pageTitle={seo.ogTitle}

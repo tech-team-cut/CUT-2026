@@ -1,5 +1,5 @@
 ---
-import { getSiteSettings } from "emdash";
+import { getSiteSettings, getEmDashCollection } from "emdash";
 import {
 	EmDashHead,
 	EmDashBodyStart,
@@ -8,6 +8,7 @@ import {
 import { createPublicPageContext } from "emdash/page";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import { Header } from "../components/Header";
+import { AnnouncementModal } from "../components/AnnouncementModal";
 import Footer from "./Footer.astro";
 import "../styles/global.css";
 
@@ -23,6 +24,16 @@ interface Props {
 
 const { title, pageTitle, description, image, canonical, content } = Astro.props;
 const { siteTitle, siteTagline, siteLogo } = resolveStarterSiteIdentity(await getSiteSettings());
+const resolvedCanonical = canonical ?? Astro.url.href;
+const resolvedImage = image ?? `${Astro.url.origin}/og-default.webp`;
+
+const { entries: announcements } = await getEmDashCollection("announcements", {});
+const now = new Date();
+const activeAnnouncement = announcements.find((a) => {
+	const start = a.data.start_date ? new Date(a.data.start_date as string) : null;
+	const end   = a.data.end_date   ? new Date(a.data.end_date   as string) : null;
+	return (!start || now >= start) && (!end || now <= end);
+}) ?? null;
 const fullTitle = title.includes(siteTitle) ? title : `${title} — ${siteTitle}`;
 const pageDescription = description ?? siteTagline;
 
@@ -33,8 +44,8 @@ const pageCtx = createPublicPageContext({
 	title: fullTitle,
 	pageTitle: pageTitle ?? title,
 	description: pageDescription,
-	canonical,
-	image,
+	canonical: resolvedCanonical,
+	image: resolvedImage,
 	content,
 	siteName: siteTitle,
 });
@@ -47,7 +58,10 @@ const pageCtx = createPublicPageContext({
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>{fullTitle}</title>
 		{pageDescription && <meta name="description" content={pageDescription} />}
-		{canonical && <link rel="canonical" href={canonical} />}
+		<link rel="canonical" href={resolvedCanonical} />
+		<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+		<meta name="twitter:title" content={fullTitle} />
+		{pageDescription && <meta name="twitter:description" content={pageDescription} />}
 		<EmDashHead page={pageCtx} />
 		<link rel="icon" href="/favicon.ico" sizes="32x32" />
 		<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
@@ -59,14 +73,27 @@ const pageCtx = createPublicPageContext({
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 
+		{activeAnnouncement && (
+			<AnnouncementModal
+				client:load
+				id={activeAnnouncement.id}
+				title={activeAnnouncement.data.title as string}
+				ctaLabel={activeAnnouncement.data.cta_label as string | null}
+				ctaHref={activeAnnouncement.data.cta_href as string | null}
+				imageUrl={activeAnnouncement.data.image
+					? `/_emdash/api/media/file/${(activeAnnouncement.data.image as any).meta?.storageKey}`
+					: null}
+				imageAlt={(activeAnnouncement.data.image as any)?.alt ?? null}
+			/>
+		)}
+
 		<Header
 			client:load
-			locationLeft={Astro.url.pathname === '/'}
 			navLinks={[
 				{ label: 'Inicio', href: '/', active: Astro.url.pathname === '/' },
 				{
 					label: 'Estudio',
-					active: Astro.url.pathname.startsWith('/estudio') || Astro.url.pathname.startsWith('/licenciaturas') || Astro.url.pathname.startsWith('/maestrias') || Astro.url.pathname.startsWith('/ejercicio-profesional'),
+					active: Astro.url.pathname.startsWith('/licenciaturas') || Astro.url.pathname.startsWith('/maestrias') || Astro.url.pathname.startsWith('/ejercicio-profesional'),
 					subLinks: [
 						{ label: 'Licenciaturas', href: '/licenciaturas' },
 						{ label: 'Maestrías', href: '/maestrias' },
@@ -85,10 +112,9 @@ const pageCtx = createPublicPageContext({
 						{ label: 'Becas', href: '/servicios-escolares/becas' },
 					],
 				},
-				{ label: 'Sobre nosotros', href: '/sobre-nosotros', active: Astro.url.pathname.startsWith('/sobre-nosotros') },
 			]}
 			ctaLabel="Convocatoria 2026"
-			ctaHref="/estudio/convocatoria"
+			ctaHref="/convocatoria"
 		/>
 
 		<main>
