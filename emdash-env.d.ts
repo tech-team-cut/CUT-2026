@@ -5,6 +5,22 @@
 
 import type { ContentBylineCredit, PortableTextBlock } from "emdash";
 
+export interface Anuncios {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  cta_label?: string;
+  cta_href?: string;
+  start_date?: string;
+  end_date?: string;
+  image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
 export interface Acervo {
   id: string;
   slug: string | null;
@@ -91,6 +107,7 @@ export interface Post {
 
 declare module "emdash" {
   interface EmDashCollections {
+    announcements: Anuncios;
     library_collections: Acervo;
     licenciaturas: Licenciatura;
     maestrias: Maestria;
