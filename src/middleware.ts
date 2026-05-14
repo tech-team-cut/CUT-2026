@@ -1,8 +1,12 @@
-import type { APIRoute } from "astro";
+import { defineMiddleware } from "astro:middleware";
 import { getEmDashCollection } from "emdash";
 
-export const GET: APIRoute = async ({ url }) => {
-	const origin = url.origin;
+export const onRequest = defineMiddleware(async (context, next) => {
+	if (context.url.pathname !== "/sitemap.xml") {
+		return next();
+	}
+
+	const origin = context.url.origin;
 
 	const [
 		{ entries: licenciaturas },
@@ -53,4 +57,4 @@ export const GET: APIRoute = async ({ url }) => {
 	return new Response(xml, {
 		headers: { "Content-Type": "application/xml; charset=utf-8" },
 	});
-};
+});
