@@ -20,7 +20,7 @@
     "lint": "oxlint src"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.1.7",
+    "@astrojs/cloudflare": "13.3.0",
     "@astrojs/react": "^5.0.0",
     "@emdash-cms/cloudflare": "^0.9.0",
     "astro": "^6.0.1",
@@ -45,12 +45,16 @@
     "playwright": "^1.59.1",
     "storybook": "^10.3.6",
     "vitest": "^4.1.5",
-    "wrangler": "^4.80.0"
+    "wrangler": "4.87.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",
       "workerd"
     ]
+  },
+  "overrides": {
+    "@cloudflare/vite-plugin": "1.35.0",
+    "vite": "^7.3.2"
   }
 }
