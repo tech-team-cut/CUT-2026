@@ -13,7 +13,7 @@ const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
 <Base
 	title={`${page?.data.title ?? 'Ejercicio Profesional'} — ${siteTitle}`}
 	description="Información sobre el ejercicio profesional, prácticas, vinculación con empresas y opciones de titulación."
-	content={{ collection: "pages", id: page?.data.id, slug: "ejercicio-profesional" }}
+	content={{ collection: "pages", id: page?.data.id ?? '', slug: "ejercicio-profesional" }}
 >
 	<div class="page-hero">
 		<div class="container">
