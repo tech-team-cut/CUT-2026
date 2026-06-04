@@ -4,7 +4,6 @@ import Base from "../../layouts/Base.astro";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import { SectionHeader } from "../../components/SectionHeader";
 import { ProgramCard } from "../../components/ProgramCard";
-import { Button } from "../../components/Button";
 
 const { entries: licenciaturas, cacheHint } = await getEmDashCollection("licenciaturas", {
 	orderBy: { order: "asc" },
@@ -87,38 +86,6 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas;
 		</div>
 	</section>
 
-	<!-- CTA -->
-	<section class="cta-section">
-		<div class="container">
-			<div class="cta-grid">
-				<div>
-					<span class="eyebrow eyebrow--light">Inscripciones 2026-1</span>
-					<h2 class="cta-title">Tu lugar en el<br/><em>Centro Universitario</em><br/>te espera.</h2>
-					<p class="cta-copy">Consulta la convocatoria oficial, requisitos de admisión y fechas clave del proceso.</p>
-					<div style="display:flex;gap:.9rem;flex-wrap:wrap;margin-top:2rem;">
-						<Button variant="primary" href="/convocatoria">Descargar convocatoria</Button>
-						<Button variant="dark-border" href="/convocatoria">Ver requisitos</Button>
-					</div>
-				</div>
-				<div class="key-dates">
-					<div class="key-date">
-						<div class="d">26<span>Jul</span></div>
-						<div>
-							<div class="kl">Examen de admisión</div>
-							<div class="kd">Primera vuelta · Aula 14</div>
-						</div>
-					</div>
-					<div class="key-date">
-						<div class="d">15<span>Ago</span></div>
-						<div>
-							<div class="kl">Inicio del semestre</div>
-							<div class="kd">Ciclo 2026-1 · Todas las licenciaturas</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
 </Base>
 
 <style>
