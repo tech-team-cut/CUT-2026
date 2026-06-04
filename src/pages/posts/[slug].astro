@@ -422,6 +422,7 @@ const hasImage = !!post.data.featured_image;
 		const MOBILE_BP = 860;
 
 		function updateSticky() {
+			if (!card) return;
 			if (window.innerWidth <= MOBILE_BP) {
 				card.style.transform = '';
 				return;
