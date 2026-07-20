@@ -17,6 +17,8 @@ jobs:
           node-version: 24
           cache: npm
 
+      - run: npm install -g npm@12.0.1
+
       - run: npm ci
 
       - name: Build
