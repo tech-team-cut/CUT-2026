@@ -21,6 +21,22 @@ export interface Anuncios {
   bylines?: ContentBylineCredit[];
 }
 
+export interface AvisoDestacado {
+  id: string;
+  slug: string | null;
+  status: string;
+  title?: string;
+  kicker?: string;
+  meta?: string;
+  cta_label?: string;
+  cta_href?: string;
+  start_date?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
 export interface Acervo {
   id: string;
   slug: string | null;
@@ -108,6 +124,7 @@ export interface Post {
 declare module "emdash" {
   interface EmDashCollections {
     announcements: Anuncios;
+    aviso_destacado: AvisoDestacado;
     library_collections: Acervo;
     licenciaturas: Licenciatura;
     maestrias: Maestria;
