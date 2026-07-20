@@ -29,14 +29,28 @@ const [
   { entries: licenciaturas, cacheHint: ch1 },
   { entries: maestrias, cacheHint: ch2 },
   { entries: posts, cacheHint: ch3 },
+  { entries: heroHighlights, cacheHint: ch4 },
 ] = await Promise.all([
   getEmDashCollection("licenciaturas", { orderBy: { order: "asc" } }),
   getEmDashCollection("maestrias", {}),
   getEmDashCollection("posts", { orderBy: { published_at: "desc" } }),
+  getEmDashCollection("aviso_destacado", { orderBy: { start_date: "desc" }, limit: 1 }),
 ])
 Astro.cache.set(ch1)
 Astro.cache.set(ch2)
 Astro.cache.set(ch3)
+Astro.cache.set(ch4)
+
+const latestHighlight = heroHighlights[0]
+const highlightDate = latestHighlight?.data?.start_date
+  ? new Date(latestHighlight.data.start_date)
+  : null
+const highlightDay = highlightDate
+  ? String(highlightDate.getUTCDate())
+  : ""
+const highlightMonthYear = highlightDate
+  ? highlightDate.toLocaleDateString("es-MX", { month: "long", year: "numeric", timeZone: "UTC" })
+  : ""
 
 const { siteTitle, siteTagline } = resolveStarterSiteIdentity(await getSiteSettings())
 
@@ -50,7 +64,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
   "@type": "EducationalOrganization",
   "name": "Centro Universitario Tlacaélel",
   "alternateName": "CUT",
-  "url": "https://www.cut.com.mx",
+  "url": "https://cut.com.mx",
   "description": "Institución de educación superior comprometida con la justicia social, el pensamiento crítico y la formación integral.",
   "address": {
     "@type": "PostalAddress",
@@ -100,15 +114,17 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
               <div class="lbl">De Trayectoria</div>
             </div>
           </div>
-          <FeaturedAvisoCard
-            day="29"
-            monthYear="Junio 25"
-            kicker="Aviso Académico"
-            title="Examen de admisión — Primera vuelta"
-            meta="Resultados disponibles en línea. Consulta el listado oficial."
-            linkText="Ver resultados →"
-            href="/posts/bienvenida-cut-2026"
-          />
+          {latestHighlight && (
+            <FeaturedAvisoCard
+              day={highlightDay}
+              monthYear={highlightMonthYear}
+              kicker={latestHighlight.data.kicker ?? "Aviso"}
+              title={latestHighlight.data.title}
+              meta={latestHighlight.data.meta ?? ""}
+              linkText={latestHighlight.data.cta_label}
+              href={latestHighlight.data.cta_href}
+            />
+          )}
         </aside>
       </div>
     </div>
