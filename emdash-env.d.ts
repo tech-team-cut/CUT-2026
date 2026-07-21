@@ -3,9 +3,9 @@
 
 /// <reference types="emdash/locals" />
 
-import type { ContentBylineCredit, PortableTextBlock } from "emdash";
+import type { ContentBylineCredit, TaxonomyTerm, PortableTextBlock } from "emdash";
 
-export interface Anuncios {
+export interface Announcement {
   id: string;
   slug: string | null;
   status: string;
@@ -14,18 +14,19 @@ export interface Anuncios {
   cta_href?: string;
   start_date?: string;
   end_date?: string;
-  image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
 export interface AvisoDestacado {
   id: string;
   slug: string | null;
   status: string;
-  title?: string;
+  title: string;
   kicker?: string;
   meta?: string;
   cta_label?: string;
@@ -35,9 +36,10 @@ export interface AvisoDestacado {
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
-export interface Acervo {
+export interface LibraryCollection {
   id: string;
   slug: string | null;
   status: string;
@@ -50,6 +52,7 @@ export interface Acervo {
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
 export interface Licenciatura {
@@ -58,7 +61,7 @@ export interface Licenciatura {
   status: string;
   title: string;
   order?: number;
-  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
   excerpt?: string;
   content?: PortableTextBlock[];
   duration?: string;
@@ -70,6 +73,7 @@ export interface Licenciatura {
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
 export interface Maestria {
@@ -77,20 +81,21 @@ export interface Maestria {
   slug: string | null;
   status: string;
   title: string;
-  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
   excerpt?: string;
   content?: PortableTextBlock[];
   duration?: string;
   modality?: string;
   degree_plan_url?: string;
   active?: boolean;
-  order?: number;
   curriculum?: unknown;
   characteristics?: unknown;
+  order?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
 export interface Page {
@@ -99,11 +104,11 @@ export interface Page {
   status: string;
   title: string;
   content?: PortableTextBlock[];
-  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
 export interface Post {
@@ -111,21 +116,22 @@ export interface Post {
   slug: string | null;
   status: string;
   title: string;
-  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number };
-  content?: PortableTextBlock[];
+  featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
   excerpt?: string;
+  content?: PortableTextBlock[];
   fecha_publicacion?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
   bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
 }
 
 declare module "emdash" {
   interface EmDashCollections {
-    announcements: Anuncios;
+    announcements: Announcement;
     aviso_destacado: AvisoDestacado;
-    library_collections: Acervo;
+    library_collections: LibraryCollection;
     licenciaturas: Licenciatura;
     maestrias: Maestria;
     pages: Page;
