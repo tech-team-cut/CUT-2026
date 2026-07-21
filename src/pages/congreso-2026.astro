@@ -23,7 +23,7 @@ export const prerender = false
 <meta name="theme-color" content="#060c1c">
 
 <style is:global>
-:root {
+.congreso {
   --bg:  #060c1c;
   --bg2: #0b1628;
   --bgc: #101d36;
@@ -45,12 +45,14 @@ export const prerender = false
   --da:  #b96b00;
   --dd:  #c4410a;
 }
-*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
-html { scroll-behavior:smooth; }
-body { background:var(--bg); color:var(--cm); font-family:var(--san); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
-img { max-width:100%; display:block; }
-a { color:inherit; text-decoration:none; }
-em { font-style:italic; }
+.congreso *,
+.congreso *::before,
+.congreso *::after { box-sizing:border-box; margin:0; padding:0; }
+html:has(.congreso) { scroll-behavior:smooth; }
+.congreso { background:var(--bg); color:var(--cm); font-family:var(--san); font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+.congreso img { max-width:100%; display:block; }
+.congreso a { color:inherit; text-decoration:none; }
+.congreso em { font-style:italic; }
 
 /* ── NAV ── */
 .nav {
@@ -351,7 +353,7 @@ em { font-style:italic; }
 .reveal.d4 { transition-delay:.32s; }
 </style>
 </head>
-<body>
+<body class="congreso">
 
 <!-- NAV -->
 <nav class="nav" id="nav" aria-label="Navegación principal">
