@@ -299,6 +299,45 @@
 					"type": "image"
 				}
 			]
+		},
+		{
+			"slug": "aviso_destacado",
+			"label": "Aviso Destacado",
+			"labelSingular": "Aviso Destacado",
+			"supports": ["drafts", "revisions"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Título",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "kicker",
+					"label": "Kicker / Etiqueta",
+					"type": "string"
+				},
+				{
+					"slug": "meta",
+					"label": "Descripción corta",
+					"type": "text"
+				},
+				{
+					"slug": "cta_label",
+					"label": "Texto del CTA",
+					"type": "string"
+				},
+				{
+					"slug": "cta_href",
+					"label": "URL del CTA",
+					"type": "string"
+				},
+				{
+					"slug": "start_date",
+					"label": "Fecha",
+					"type": "datetime"
+				}
+			]
 		}
 	],
 	"taxonomies": [
@@ -457,6 +496,21 @@
 		}
 	],
 	"content": {
+		"aviso_destacado": [
+			{
+				"id": "examen-admision-segunda-vuelta",
+				"slug": "examen-admision-segunda-vuelta",
+				"status": "published",
+				"data": {
+					"title": "Examen de admisión — Segunda vuelta",
+					"kicker": "Aviso Académico",
+					"meta": "Resultados disponibles en línea. Consulta el listado oficial.",
+					"cta_label": "Ver resultados →",
+					"cta_href": "/resultados",
+					"start_date": "2026-06-02T00:00:00Z"
+				}
+			}
+		],
 		"licenciaturas": [
 			{
 				"id": "administracion-publica",

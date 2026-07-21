@@ -38,7 +38,7 @@ const hasImage = !!post.data.featured_image;
 	"publisher": {
 		"@type": "Organization",
 		"name": "Centro Universitario Tlacaélel",
-		"url": "https://www.cut.com.mx"
+		"url": "https://cut.com.mx"
 	}
 }} />
 <Base
@@ -415,7 +415,7 @@ const hasImage = !!post.data.featured_image;
 <script>
 	// Sticky card via JS — CSS sticky breaks when EmDash adds overflow wrappers
 	(function () {
-		const card = document.querySelector('.post-card') as HTMLElement | null;
+		const card = document.querySelector('.post-card') as HTMLElement;
 		if (!card) return;
 
 		const STICKY_TOP = 84 + 24; // header height + gap
