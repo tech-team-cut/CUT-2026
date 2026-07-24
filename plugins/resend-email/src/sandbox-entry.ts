@@ -9,12 +9,12 @@ export function createPlugin(_options: Record<string, unknown>) {
 		hooks: {
 			"email:deliver": {
 				exclusive: true,
-				handler: async ({ message }, _ctx) => {
-					const apiKey = process.env.RESEND_API_KEY;
-					const from = process.env.RESEND_FROM;
+				handler: async ({ message }, ctx) => {
+					const apiKey = await ctx.kv.get<string>("settings:apiKey");
+					const from = await ctx.kv.get<string>("settings:from");
 
-					if (!apiKey) throw new Error("[resend-email] RESEND_API_KEY Worker secret not set — run: wrangler secret put RESEND_API_KEY");
-					if (!from) throw new Error("[resend-email] RESEND_FROM Worker secret not set — run: wrangler secret put RESEND_FROM");
+					if (!apiKey) throw new Error("[resend-email] API key not set in plugin KV");
+					if (!from) throw new Error("[resend-email] From address not set in plugin KV");
 
 					const res = await fetch("https://api.resend.com/emails", {
 						method: "POST",
