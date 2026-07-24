@@ -1,13 +1,5 @@
 import { definePlugin } from "emdash";
 
-async function getEnv(): Promise<Record<string, string>> {
-	try {
-		return (await import("cloudflare:workers")).env as Record<string, string>;
-	} catch {
-		return {};
-	}
-}
-
 export function createPlugin(_options: Record<string, unknown>) {
 	return definePlugin({
 		id: "resend-email",
@@ -18,9 +10,8 @@ export function createPlugin(_options: Record<string, unknown>) {
 			"email:deliver": {
 				exclusive: true,
 				handler: async ({ message }, _ctx) => {
-					const env = await getEnv();
-					const apiKey = env.RESEND_API_KEY;
-					const from = env.RESEND_FROM;
+					const apiKey = process.env.RESEND_API_KEY;
+					const from = process.env.RESEND_FROM;
 
 					if (!apiKey) throw new Error("[resend-email] RESEND_API_KEY Worker secret not set — run: wrangler secret put RESEND_API_KEY");
 					if (!from) throw new Error("[resend-email] RESEND_FROM Worker secret not set — run: wrangler secret put RESEND_FROM");
