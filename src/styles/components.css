@@ -1,3 +1,5 @@
+html { scroll-behavior: smooth; }
+
 /* ─── Buttons ────────────────────────────────────────────────────────────── */
 .btn {
   display: inline-flex;
@@ -345,6 +347,10 @@
     color: var(--secondary);
     line-height: 1;
     letter-spacing: -0.02em;
+    text-decoration: none;
+    display: block;
+
+    &:hover { color: var(--primary); }
 
     & sup {
       color: var(--primary);

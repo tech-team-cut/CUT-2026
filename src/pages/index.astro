@@ -102,15 +102,15 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
         <aside class="hero-aside">
           <div class="stat-row">
             <div class="stat">
-              <div class="num">7<sup>+</sup></div>
+              <a href="#programs" class="num">{licenciaturas.length}</a>
               <div class="lbl">Licenciaturas</div>
             </div>
             <div class="stat">
-              <div class="num">4</div>
+              <a href="#maestrias-section" class="num">{maestrias.length}</a>
               <div class="lbl">Maestrías</div>
             </div>
             <div class="stat">
-              <div class="num">15<sup>años</sup></div>
+              <a href="#about" class="num">15<sup>años</sup></a>
               <div class="lbl">De Trayectoria</div>
             </div>
           </div>
@@ -213,7 +213,7 @@ const orderedLics = featuredLic ? [featuredLic, ...restLics] : licenciaturas
                 />
                 )
                 })}      </div>
-      <div class="programs-subsection">
+      <div class="programs-subsection" id="maestrias-section">
         <div class="programs-subsection-head">
           <div>
             <div class="t-mono">— Posgrados</div>
