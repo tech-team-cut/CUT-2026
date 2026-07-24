@@ -1,5 +1,13 @@
 import { definePlugin } from "emdash";
 
+async function getEnv(): Promise<Record<string, string>> {
+	try {
+		return (await import("cloudflare:workers")).env as Record<string, string>;
+	} catch {
+		return {};
+	}
+}
+
 export function createPlugin(_options: Record<string, unknown>) {
 	return definePlugin({
 		id: "resend-email",
@@ -9,13 +17,15 @@ export function createPlugin(_options: Record<string, unknown>) {
 		hooks: {
 			"email:deliver": {
 				exclusive: true,
-				handler: async ({ message }, ctx) => {
-					const apiKey = await ctx.kv.get<string>("settings:apiKey");
-					const from = await ctx.kv.get<string>("settings:from");
-					if (!apiKey) throw new Error("[resend-email] API key not configured — set it in Admin → Extensions → resend-email");
-					if (!from) throw new Error("[resend-email] From address not configured — set it in Admin → Extensions → resend-email");
+				handler: async ({ message }, _ctx) => {
+					const env = await getEnv();
+					const apiKey = env.RESEND_API_KEY;
+					const from = env.RESEND_FROM;
 
-					const res = await ctx.http!.fetch("https://api.resend.com/emails", {
+					if (!apiKey) throw new Error("[resend-email] RESEND_API_KEY Worker secret not set — run: wrangler secret put RESEND_API_KEY");
+					if (!from) throw new Error("[resend-email] RESEND_FROM Worker secret not set — run: wrangler secret put RESEND_FROM");
+
+					const res = await fetch("https://api.resend.com/emails", {
 						method: "POST",
 						headers: {
 							Authorization: `Bearer ${apiKey}`,
@@ -34,20 +44,6 @@ export function createPlugin(_options: Record<string, unknown>) {
 						const body = await res.text().catch(() => "(no body)");
 						throw new Error(`[resend-email] Delivery failed (${res.status}): ${body}`);
 					}
-				},
-			},
-		},
-		admin: {
-			settingsSchema: {
-				apiKey: {
-					type: "secret",
-					label: "Resend API Key",
-					description: "From resend.com dashboard → API Keys",
-				},
-				from: {
-					type: "string",
-					label: "From Address",
-					description: "e.g. noreply@send.cms.cut.com.mx — must be on a verified Resend domain",
 				},
 			},
 		},
