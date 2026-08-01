@@ -1,5 +1,5 @@
 ---
-import { PortableText } from "emdash/ui";
+import { PortableText, Image } from "emdash/ui";
 import ProgramDetail from "../../layouts/ProgramDetail.astro";
 import { SectionHeader } from "../../components/SectionHeader";
 import { CurriculumGrid } from "../../components/CurriculumGrid";
@@ -47,6 +47,9 @@ const curriculum = (program.data as any).curriculum;
 		<div class="container">
 			<div class="hero-inner">
 				<div class="hero-main">
+					{program.data.icon && (
+						<Image image={program.data.icon as any} class="program-icon" />
+					)}
 					<span class="eyebrow eyebrow--light">Programa de Posgrado · Maestría</span>
 					<h1 class="t-display-lg hero-title" {...program.edit.title}>
 						{program.data.title}
