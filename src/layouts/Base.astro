@@ -78,6 +78,7 @@ const pageCtx = createPublicPageContext({
 				client:load
 				id={activeAnnouncement.id}
 				title={activeAnnouncement.data.title as string}
+				description={activeAnnouncement.data.description as string | null}
 				ctaLabel={activeAnnouncement.data.cta_label as string | null}
 				ctaHref={activeAnnouncement.data.cta_href as string | null}
 				imageUrl={activeAnnouncement.data.image
