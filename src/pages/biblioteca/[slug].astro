@@ -1,0 +1,538 @@
+---
+import { getEmDashCollection, getTerm, getSiteSettings } from "emdash";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const { slug } = Astro.params;
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const PROGRAMS: Record<string, { name: string; idx: string; lede: string }> = {
+	derecho: {
+		name: "Derecho",
+		idx: "BIB · 01",
+		lede: "Acervo curado para la Licenciatura y el posgrado en Derecho: doctrina, códigos comentados, jurisprudencia, tesis y revistas jurídicas.",
+	},
+	contaduria: {
+		name: "Contaduría",
+		idx: "BIB · 02",
+		lede: "Acervo curado para la Licenciatura en Contaduría: normas de información financiera, auditoría, costos y derecho fiscal.",
+	},
+	"administracion-publica": {
+		name: "Administración Pública",
+		idx: "BIB · 03",
+		lede: "Acervo curado para la Licenciatura y el posgrado en Administración Pública: políticas públicas, gestión gubernamental y teoría del Estado.",
+	},
+	pedagogia: {
+		name: "Pedagogía",
+		idx: "BIB · 04",
+		lede: "Acervo curado para la Licenciatura y el posgrado en Pedagogía: didáctica, currículo, evaluación educativa y psicopedagogía.",
+	},
+	psicopedagogia: {
+		name: "Psicopedagogía",
+		idx: "BIB · 05",
+		lede: "Acervo curado para la Licenciatura en Psicopedagogía: psicología educativa, diagnóstico, orientación e intervención.",
+	},
+	"periodismo-y-comunicacion": {
+		name: "Periodismo y Comunicación",
+		idx: "BIB · 06",
+		lede: "Acervo curado para la Licenciatura en Periodismo y Comunicación: teoría de la comunicación, periodismo, medios y producción multimedia.",
+	},
+	mercadotecnia: {
+		name: "Mercadotecnia",
+		idx: "BIB · 07",
+		lede: "Acervo curado para la Licenciatura en Mercadotecnia: marketing digital, branding, comportamiento del consumidor y analítica.",
+	},
+};
+
+const [{ entries: bookEntries, cacheHint }, term] = await Promise.all([
+	getEmDashCollection("books", { where: { programa: slug! }, orderBy: { created_at: "desc" }, status: "published" }),
+	getTerm("programa", slug!),
+]);
+Astro.cache.set(cacheHint);
+
+const program = PROGRAMS[slug!] ?? null;
+if (!term && bookEntries.length === 0) return Astro.redirect("/biblioteca");
+
+const resolvedProgram = program ?? { name: term?.label ?? slug!, idx: "BIB · —", lede: `Acervo de ${term?.label ?? slug}.` };
+
+const booksData = bookEntries.map((b) => ({
+	title: b.data.title,
+	author: b.data.author ?? "",
+	year: b.data.year ?? null,
+	external_url: b.data.external_url ?? "",
+}));
+---
+
+<Base
+	title={`Biblioteca · ${resolvedProgram.name} — ${siteTitle}`}
+	description={resolvedProgram.lede}
+>
+	<!-- Hero -->
+	<section class="prog-hero">
+		<div class="container">
+			<nav class="crumbs" aria-label="Ruta de navegación">
+				<a href="/">Inicio</a>
+				<span class="sep">/</span>
+				<a href="/biblioteca">biblioteca</a>
+				<span class="sep">/</span>
+				<span class="here">{slug}</span>
+			</nav>
+			<div class="prog-hero-grid">
+				<div>
+					<span class="eyebrow eyebrow--light">Biblioteca por programa · {resolvedProgram.idx}</span>
+					<h1 class="t-display-md" style="color:#fff;margin-top:1.25rem;">{resolvedProgram.name}.</h1>
+					<p class="hero-lede" style="color:rgba(255,255,255,0.72);margin-top:1.25rem;max-width:40rem;">{resolvedProgram.lede}</p>
+				</div>
+				<div class="prog-stats">
+					<div class="prog-stat">
+						<div class="num" id="stat-total">{booksData.length}</div>
+						<div class="lbl">Títulos</div>
+					</div>
+					<div class="prog-stat">
+						<div class="num">100<sup>%</sup></div>
+						<div class="lbl">En línea</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Toolbar -->
+	<div class="toolbar">
+		<div class="container">
+			<div class="toolbar-inner">
+				<label class="search-box">
+					<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<circle cx="11" cy="11" r="7"/>
+						<path d="m20 20-3.5-3.5"/>
+					</svg>
+					<input type="search" id="search" placeholder={`Buscar en ${resolvedProgram.name} por título o autor…`} aria-label="Buscar" />
+				</label>
+				<div class="sort-wrap">
+					<label for="sort">Ordenar</label>
+					<select id="sort">
+						<option value="title">Título A–Z</option>
+						<option value="author">Autor A–Z</option>
+						<option value="year-desc">Año — reciente</option>
+						<option value="year-asc">Año — antiguo</option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Results -->
+	<section class="section">
+		<div class="container">
+			<div class="results-head">
+				<div class="count" id="result-count"></div>
+				<div class="active-filters" id="active-filters"></div>
+			</div>
+			<div class="book-grid" id="book-grid">
+				{booksData.map((b) => (
+					<a
+						class="book"
+						href={b.external_url || "#"}
+						target="_blank"
+						rel="noopener noreferrer"
+						data-title={b.title.toLowerCase()}
+						data-author={b.author.toLowerCase()}
+						data-year={String(b.year ?? "")}
+					>
+						<div class="book-cover">
+							<div>
+								<div class="bc-title">{b.title}</div>
+								<div class="bc-author">{b.author}</div>
+							</div>
+						</div>
+						<div class="book-meta">
+							<div class="b-title">{b.title}</div>
+							<div class="b-author">{b.author}</div>
+							<div class="b-foot"><span>{b.year ?? ""}</span></div>
+						</div>
+					</a>
+				))}
+			</div>
+			<div class="empty" id="empty" style="display:none;">
+				<h3>Sin resultados</h3>
+				<p>No hay materiales que coincidan con tu búsqueda. Prueba con otros filtros.</p>
+			</div>
+		</div>
+	</section>
+
+</Base>
+
+<script define:vars={{ slug }}>
+const state = { q: "", sort: "title" };
+
+const grid = document.getElementById("book-grid");
+const emptyEl = document.getElementById("empty");
+const countEl = document.getElementById("result-count");
+const activeEl = document.getElementById("active-filters");
+const cards = Array.from(grid.querySelectorAll(".book"));
+
+function render() {
+	let visible = cards.slice();
+
+	if (state.q) {
+		const q = state.q.toLowerCase();
+		visible = visible.filter(c => c.dataset.title.includes(q) || c.dataset.author.includes(q));
+	}
+
+	visible.sort((a, b) => {
+		if (state.sort === "title") return a.dataset.title.localeCompare(b.dataset.title);
+		if (state.sort === "author") return a.dataset.author.localeCompare(b.dataset.author);
+		if (state.sort === "year-desc") return Number(b.dataset.year || 0) - Number(a.dataset.year || 0);
+		if (state.sort === "year-asc") return Number(a.dataset.year || 0) - Number(b.dataset.year || 0);
+		return 0;
+	});
+
+	const visibleSet = new Set(visible);
+	cards.forEach(c => { c.style.display = visibleSet.has(c) ? "" : "none"; });
+	visible.forEach(c => grid.appendChild(c));
+
+	emptyEl.style.display = visible.length ? "none" : "block";
+	countEl.innerHTML = `<b>${visible.length}</b> de ${cards.length} títulos · programa <code>${slug}</code>`;
+
+	if (state.q) {
+		activeEl.innerHTML = `Búsqueda: "${state.q}" <a href="#" class="clear" id="clear">Limpiar</a>`;
+		document.getElementById("clear").onclick = (e) => {
+			e.preventDefault();
+			state.q = "";
+			document.getElementById("search").value = "";
+			render();
+		};
+	} else {
+		activeEl.innerHTML = "";
+	}
+}
+
+document.getElementById("search").addEventListener("input", (e) => { state.q = e.target.value; render(); });
+document.getElementById("sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+
+render();
+</script>
+
+<style>
+/* ── Hero ── */
+.prog-hero {
+	background: var(--secondary);
+	color: #fff;
+	padding: 2.5rem 0 3rem;
+	position: relative;
+	overflow: hidden;
+}
+
+.prog-hero::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(255, 255, 255, 0.018) 22px 23px);
+	pointer-events: none;
+}
+
+.prog-hero .container {
+	position: relative;
+	z-index: 1;
+}
+
+.crumbs {
+	display: flex;
+	gap: 0.55rem;
+	align-items: center;
+	font-family: var(--mono);
+	font-size: 12px;
+	letter-spacing: 0.06em;
+	color: rgba(255, 255, 255, 0.55);
+	margin: 0 0 2rem;
+	padding: 0;
+	list-style: none;
+}
+
+.crumbs a {
+	color: rgba(255, 255, 255, 0.55);
+	text-decoration: none;
+}
+
+.crumbs a:hover { color: #fff; }
+
+.crumbs .sep { color: rgba(255, 255, 255, 0.3); }
+
+.crumbs .here { color: var(--accent-warm); }
+
+.prog-hero-grid {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 3rem;
+	align-items: end;
+}
+
+.prog-stats {
+	display: flex;
+	gap: 2.5rem;
+	align-items: flex-end;
+}
+
+.prog-stat .num {
+	font-family: var(--serif);
+	font-size: 2.5rem;
+	font-weight: 600;
+	color: #fff;
+	line-height: 1;
+	letter-spacing: -0.02em;
+}
+
+.prog-stat .num sup {
+	color: var(--accent-warm);
+	font-size: 0.9rem;
+	vertical-align: top;
+}
+
+.prog-stat .lbl {
+	font-family: var(--sans);
+	font-size: 10px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.55);
+	margin-top: 0.5rem;
+}
+
+/* ── Toolbar ── */
+.toolbar {
+	background: var(--surface-bright);
+	border-bottom: 1px solid var(--outline-soft);
+	position: sticky;
+	top: 84px;
+	z-index: 40;
+}
+
+.toolbar-inner {
+	padding: 1.25rem 0;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 1rem;
+	align-items: center;
+}
+
+.search-box {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	border: 1px solid var(--outline);
+	border-radius: var(--radius-md);
+	padding: 0.7rem 1rem;
+	background: var(--surface);
+	max-width: 30rem;
+	cursor: text;
+	transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.search-box:focus-within {
+	border-color: var(--secondary);
+	background: var(--surface-bright);
+}
+
+.search-box svg { color: var(--secondary-soft); flex-shrink: 0; }
+
+.search-box input {
+	border: 0;
+	background: transparent;
+	outline: none;
+	font-family: var(--sans);
+	font-size: 0.9375rem;
+	color: var(--on-surface);
+	width: 100%;
+}
+
+.search-box input::placeholder { color: var(--secondary-soft); }
+
+.sort-wrap {
+	display: flex;
+	align-items: center;
+	gap: 0.65rem;
+}
+
+.sort-wrap label {
+	font-family: var(--sans);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: var(--secondary-soft);
+}
+
+.sort-wrap select {
+	font-family: var(--sans);
+	font-size: 13px;
+	color: var(--secondary);
+	border: 1px solid var(--outline-soft);
+	border-radius: var(--radius-md);
+	padding: 0.5rem 0.75rem;
+	background: var(--surface-bright);
+	cursor: pointer;
+}
+
+/* ── Results ── */
+.results-head {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	margin-bottom: 2rem;
+}
+
+.count {
+	font-family: var(--mono);
+	font-size: 13px;
+	color: var(--secondary-soft);
+	letter-spacing: 0.04em;
+}
+
+.count b { color: var(--primary); font-weight: 500; }
+
+.count code {
+	font-family: var(--mono);
+	color: var(--primary);
+	font-size: 0.85em;
+}
+
+.active-filters {
+	font-family: var(--sans);
+	font-size: 13px;
+	color: var(--secondary-soft);
+}
+
+.active-filters :global(.clear) {
+	color: var(--primary);
+	font-weight: 600;
+	margin-left: 0.5rem;
+	text-decoration: none;
+}
+
+/* ── Book grid ── */
+.book-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 2rem 1.75rem;
+}
+
+.book {
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+}
+
+.book-cover {
+	aspect-ratio: 2/3;
+	background-color: var(--secondary);
+	background-image: repeating-linear-gradient(135deg, transparent 0 12px, rgba(255, 255, 255, 0.03) 12px 13px);
+	border: 1px solid var(--outline-soft);
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 1.1rem 1rem;
+	overflow: hidden;
+	transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.book:hover .book-cover {
+	transform: translateY(-4px);
+	box-shadow: 0 14px 30px -18px rgba(15, 23, 42, 0.55);
+}
+
+.book-cover::before {
+	content: "";
+	position: absolute;
+	left: 0; top: 0; bottom: 0;
+	width: 5px;
+	background: var(--primary);
+}
+
+.bc-cat {
+	font-family: var(--sans);
+	font-size: 9px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--accent-warm);
+	line-height: 1.3;
+}
+
+.bc-title {
+	font-family: var(--serif);
+	font-size: 1.05rem;
+	font-weight: 500;
+	color: #fff;
+	line-height: 1.2;
+}
+
+.bc-author {
+	font-family: var(--sans);
+	font-size: 11px;
+	color: rgba(255, 255, 255, 0.6);
+	letter-spacing: 0.02em;
+	margin-top: 0.35rem;
+}
+
+.book-meta { margin-top: 0.9rem; }
+
+.b-title {
+	font-family: var(--serif);
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--secondary);
+	line-height: 1.25;
+}
+
+.b-author {
+	font-family: var(--sans);
+	font-size: 13px;
+	color: var(--tertiary);
+	margin-top: 0.25rem;
+}
+
+.b-foot {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	margin-top: 0.6rem;
+	font-family: var(--mono);
+	font-size: 11px;
+	color: var(--secondary-soft);
+	letter-spacing: 0.04em;
+}
+
+/* ── Empty state ── */
+.empty {
+	text-align: center;
+	padding: 4rem 0;
+	color: var(--secondary-soft);
+}
+
+.empty h3 {
+	font-family: var(--serif);
+	font-size: 1.5rem;
+	color: var(--secondary);
+	margin: 0 0 0.5rem;
+}
+
+.empty p { margin: 0; font-size: 0.9375rem; }
+
+/* ── Responsive ── */
+@media (max-width: 980px) {
+	.prog-hero-grid {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+
+	.book-grid { grid-template-columns: repeat(3, 1fr); }
+	.toolbar { position: static; }
+}
+
+@media (max-width: 620px) {
+	.book-grid { grid-template-columns: repeat(2, 1fr); }
+	.toolbar-top { grid-template-columns: 1fr; }
+	.search-box { max-width: none; }
+}
+</style>
