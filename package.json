@@ -20,18 +20,18 @@
     "lint": "oxlint src"
   },
   "dependencies": {
-    "resend-email": "file:./plugins/resend-email",
-    "@astrojs/cloudflare": "13.7.0",
-    "@astrojs/react": "^6.0.0",
+    "@astrojs/cloudflare": "^14.1.7",
+    "@astrojs/react": "^6.0.2",
     "@emdash-cms/cloudflare": "^0.29.0",
-    "astro": "^6.3.0",
+    "astro": "^7.1.6",
     "emdash": "^0.29.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-icons": "^5.6.0"
+    "react-icons": "^5.6.0",
+    "resend-email": "file:./plugins/resend-email"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.7",
+    "@astrojs/check": "^0.9.10",
     "@chromatic-com/storybook": "^5.1.2",
     "@cloudflare/workers-types": "^4.20260305.1",
     "@storybook/addon-a11y": "^10.3.6",
@@ -63,5 +63,8 @@
       "version": "12.0.1",
       "onFail": "download"
     }
+  },
+  "allowScripts": {
+    "better-sqlite3@12.11.1": true
   }
 }
