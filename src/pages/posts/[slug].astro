@@ -63,12 +63,12 @@ const hasImage = !!post.data.featured_image;
 					{categories.length > 0 && (
 						<div class="post-card__cats">
 							{categories.map(c => (
-								<a href={`/category/${c.slug}`} class="post-card__cat">{c.label}</a>
+								<span class="post-card__cat">{c.label}</span>
 							))}
 						</div>
 					)}
 
-					{dateStr && (
+{dateStr && (
 						<div class="post-card__date">
 							<span class="post-card__date-rule"></span>
 							<time>{dateStr}</time>
@@ -189,13 +189,11 @@ const hasImage = !!post.data.featured_image;
 	letter-spacing: 0.14em;
 	text-transform: uppercase;
 	color: var(--primary);
-	text-decoration: none;
 	background: var(--primary-tint);
 	padding: 3px 8px;
 	border-radius: 2px;
-	transition: opacity 0.15s;
 }
-.post-card__cat:hover { opacity: 0.7; }
+
 
 .post-card__date {
 	display: flex;
