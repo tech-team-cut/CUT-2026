@@ -15,6 +15,7 @@ export interface Announcement {
   start_date?: string;
   end_date?: string;
   image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -32,6 +33,38 @@ export interface AvisoDestacado {
   cta_label?: string;
   cta_href?: string;
   start_date?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Book {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  author?: string;
+  year?: number;
+  external_url?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface GaleriaMultimedia {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  image?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
+  video_url?: string;
+  youtube_url?: string;
+  caption?: string;
+  order?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -69,6 +102,7 @@ export interface Licenciatura {
   degree_plan_url?: string;
   active?: boolean;
   curriculum?: unknown;
+  icon?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -91,6 +125,7 @@ export interface Maestria {
   curriculum?: unknown;
   characteristics?: unknown;
   order?: number;
+  icon?: { id: string; src?: string; alt?: string; width?: number; height?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> };
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -131,6 +166,8 @@ declare module "emdash" {
   interface EmDashCollections {
     announcements: Announcement;
     aviso_destacado: AvisoDestacado;
+    books: Book;
+    galeria_multimedia: GaleriaMultimedia;
     library_collections: LibraryCollection;
     licenciaturas: Licenciatura;
     maestrias: Maestria;

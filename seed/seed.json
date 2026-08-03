@@ -144,6 +144,11 @@
 					"slug": "curriculum",
 					"label": "Plan de Estudios (JSON)",
 					"type": "json"
+				},
+				{
+					"slug": "icon",
+					"label": "Ícono",
+					"type": "image"
 				}
 			]
 		},
@@ -216,6 +221,11 @@
 					"slug": "order",
 					"label": "Orden",
 					"type": "integer"
+				},
+				{
+					"slug": "icon",
+					"label": "Ícono",
+					"type": "image"
 				}
 			]
 		},
@@ -297,7 +307,25 @@
 					"slug": "image",
 					"label": "Imagen",
 					"type": "image"
+				},
+				{
+					"slug": "description",
+					"label": "Descripción",
+					"type": "text",
+					"maxLength": 500
 				}
+			]
+		},
+		{
+			"slug": "books",
+			"label": "Libros",
+			"labelSingular": "Libro",
+			"supports": ["drafts", "search"],
+			"fields": [
+				{ "slug": "title", "label": "Título", "type": "string", "required": true, "searchable": true },
+				{ "slug": "author", "label": "Autor", "type": "string", "searchable": true },
+				{ "slug": "year", "label": "Año", "type": "integer" },
+				{ "slug": "external_url", "label": "Enlace (Google Drive)", "type": "string" }
 			]
 		},
 		{
@@ -338,6 +366,20 @@
 					"type": "datetime"
 				}
 			]
+		},
+		{
+			"slug": "galeria_multimedia",
+			"label": "Galería Multimedia",
+			"labelSingular": "Elemento de Galería",
+			"supports": ["drafts"],
+			"fields": [
+				{ "slug": "title", "label": "Título", "type": "string", "required": true },
+				{ "slug": "image", "label": "Imagen", "type": "image" },
+				{ "slug": "video_url", "label": "Video (URL directa)", "type": "string" },
+				{ "slug": "youtube_url", "label": "YouTube URL", "type": "string" },
+				{ "slug": "caption", "label": "Pie de foto/video", "type": "text" },
+				{ "slug": "order", "label": "Orden", "type": "integer" }
+			]
 		}
 	],
 	"taxonomies": [
@@ -366,6 +408,22 @@
 					"slug": "convocatorias",
 					"label": "Convocatorias"
 				}
+			]
+		},
+		{
+			"name": "programa",
+			"label": "Programas",
+			"labelSingular": "Programa",
+			"hierarchical": false,
+			"collections": ["books"],
+			"terms": [
+				{ "slug": "administracion-publica", "label": "Administración Pública" },
+				{ "slug": "contaduria", "label": "Contaduría" },
+				{ "slug": "derecho", "label": "Derecho" },
+				{ "slug": "psicopedagogia", "label": "Psicopedagogía" },
+				{ "slug": "pedagogia", "label": "Pedagogía" },
+				{ "slug": "periodismo-y-comunicacion", "label": "Periodismo y Comunicación" },
+				{ "slug": "mercadotecnia", "label": "Mercadotecnia" }
 			]
 		},
 		{
@@ -496,6 +554,102 @@
 		}
 	],
 	"content": {
+		"books": [
+			{
+				"id": "teoria-general-del-proceso",
+				"slug": "teoria-general-del-proceso",
+				"status": "published",
+				"data": { "title": "Teoría General del Proceso", "author": "Cipriano Gómez Lara", "year": 2023, "external_url": "" },
+				"taxonomies": { "programa": ["derecho"] }
+			},
+			{
+				"id": "garantias-individuales",
+				"slug": "garantias-individuales",
+				"status": "published",
+				"data": { "title": "Garantías Individuales", "author": "Ignacio Burgoa Orihuela", "year": 2023, "external_url": "" },
+				"taxonomies": { "programa": ["derecho"] }
+			},
+			{
+				"id": "introduccion-al-estudio-del-derecho",
+				"slug": "introduccion-al-estudio-del-derecho",
+				"status": "published",
+				"data": { "title": "Introducción al Estudio del Derecho", "author": "Eduardo García Máynez", "year": 2021, "external_url": "" },
+				"taxonomies": { "programa": ["derecho"] }
+			},
+			{
+				"id": "derecho-penal-parte-general",
+				"slug": "derecho-penal-parte-general",
+				"status": "published",
+				"data": { "title": "Derecho Penal — Parte General", "author": "Francisco Muñoz Conde", "year": 2024, "external_url": "" },
+				"taxonomies": { "programa": ["derecho"] }
+			},
+			{
+				"id": "el-juicio-de-amparo",
+				"slug": "el-juicio-de-amparo",
+				"status": "published",
+				"data": { "title": "El Juicio de Amparo", "author": "Ignacio Burgoa Orihuela", "year": 2023, "external_url": "" },
+				"taxonomies": { "programa": ["derecho"] }
+			},
+			{
+				"id": "derecho-administrativo-fraga",
+				"slug": "derecho-administrativo-fraga",
+				"status": "published",
+				"data": { "title": "Derecho Administrativo", "author": "Gabino Fraga", "year": 2020, "external_url": "" },
+				"taxonomies": { "programa": ["derecho", "administracion-publica"] }
+			},
+			{
+				"id": "normas-de-informacion-financiera",
+				"slug": "normas-de-informacion-financiera",
+				"status": "published",
+				"data": { "title": "Normas de Información Financiera", "author": "CINIF", "year": 2024, "external_url": "" },
+				"taxonomies": { "programa": ["contaduria"] }
+			},
+			{
+				"id": "pedagogia-del-oprimido",
+				"slug": "pedagogia-del-oprimido",
+				"status": "published",
+				"data": { "title": "Pedagogía del Oprimido", "author": "Paulo Freire", "year": 2020, "external_url": "" },
+				"taxonomies": { "programa": ["pedagogia"] }
+			},
+			{
+				"id": "la-educacion-encierra-un-tesoro",
+				"slug": "la-educacion-encierra-un-tesoro",
+				"status": "published",
+				"data": { "title": "La Educación Encierra un Tesoro", "author": "Jacques Delors", "year": 2022, "external_url": "" },
+				"taxonomies": { "programa": ["pedagogia"] }
+			},
+			{
+				"id": "la-gestion-publica",
+				"slug": "la-gestion-publica",
+				"status": "published",
+				"data": { "title": "La Gestión Pública", "author": "Omar Guerrero", "year": 2021, "external_url": "" },
+				"taxonomies": { "programa": ["administracion-publica"] }
+			}
+		],
+		"galeria_multimedia": [
+			{
+				"id": "galeria-youtube-1",
+				"slug": "galeria-youtube-1",
+				"status": "published",
+				"data": {
+					"title": "Video institucional CUT",
+					"youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+					"caption": "Centro Universitario Tlacaélel — presentación institucional",
+					"order": 1
+				}
+			},
+			{
+				"id": "galeria-youtube-2",
+				"slug": "galeria-youtube-2",
+				"status": "published",
+				"data": {
+					"title": "Vida universitaria",
+					"youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+					"caption": "Actividades culturales y deportivas en el campus",
+					"order": 2
+				}
+			}
+		],
 		"aviso_destacado": [
 			{
 				"id": "examen-admision-segunda-vuelta",

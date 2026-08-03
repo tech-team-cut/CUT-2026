@@ -18,3 +18,7 @@
 .section--low {
   background: var(--surface-low);
 }
+
+.section--bright {
+  background: var(--surface-bright);
+}

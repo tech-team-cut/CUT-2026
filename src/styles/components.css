@@ -82,6 +82,14 @@ html { scroll-behavior: smooth; }
 }
 
 /* ─── Eyebrow ────────────────────────────────────────────────────────────── */
+.program-icon {
+  display: block;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 1.25rem;
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -984,6 +992,14 @@ html { scroll-behavior: smooth; }
   color: var(--secondary);
   line-height: 1.35;
   margin: 0 0 1.5rem;
+}
+
+.announcement-description {
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: -0.75rem 0 1.5rem;
 }
 
 .announcement-cta {

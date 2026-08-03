@@ -1,0 +1,415 @@
+---
+import { getEmDashCollection, getEntryTerms, getTaxonomyTerms, getSiteSettings } from "emdash";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import { SectionHeader } from "../../components/SectionHeader";
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const [{ entries: recentBookEntries, cacheHint }, { entries: allBooks }, programs] = await Promise.all([
+	getEmDashCollection("books", { limit: 6, orderBy: { created_at: "desc" }, status: "published" }),
+	getEmDashCollection("books", { status: "published" }),
+	getTaxonomyTerms("programa"),
+]);
+Astro.cache.set(cacheHint);
+
+const activePrograms = programs.filter(p => (p.count ?? 0) > 0);
+const totalBooks = allBooks.length;
+
+const recentBooks = await Promise.all(
+	recentBookEntries.map(async (book) => {
+		const terms = await getEntryTerms("books", book.data.id, "programa");
+		const first = terms[0];
+		return {
+			prog: first?.label ?? "",
+			title: book.data.title,
+			author: book.data.author ?? "",
+			year: String(book.data.year ?? ""),
+			href: book.data.external_url || "#",
+		};
+	})
+);
+---
+
+<Base
+	title={`Biblioteca — ${siteTitle}`}
+	description="Un solo repositorio de conocimiento, organizado por programa académico. Consulta libros, revistas, tesis y materiales de estudio curados para tu licenciatura o posgrado."
+>
+	<!-- Hero -->
+	<section class="bib-hero">
+		<div class="container">
+			<nav class="crumbs" aria-label="Ruta de navegación">
+				<a href="/">Inicio</a>
+				<span class="sep">/</span>
+				<span class="here">Biblioteca</span>
+			</nav>
+			<div class="hero-grid">
+				<div>
+					<span class="eyebrow eyebrow--light">Acervo digital · Acceso institucional</span>
+					<h1 class="t-display-lg" style="color:#fff;margin-top:1.25rem;">
+						Biblioteca <em class="bib-em">Digital</em>,<br/>un acervo por<br/>programa.
+					</h1>
+					<p class="hero-lede" style="color:rgba(255,255,255,0.72);margin-top:1.5rem;">
+						Un solo repositorio de conocimiento, organizado por programa académico. Consulta libros, revistas, tesis y materiales de estudio curados para tu licenciatura o posgrado.
+					</p>
+				</div>
+				<aside class="bib-stats">
+					<div class="stat">
+						<div class="num">{totalBooks.toLocaleString("es-MX")}<sup>+</sup></div>
+						<div class="lbl">Títulos en acervo</div>
+					</div>
+					<div class="stat">
+						<div class="num">{activePrograms.length}</div>
+						<div class="lbl">Bibliotecas por programa</div>
+					</div>
+					<div class="stat">
+						<div class="num">24<sup>/7</sup></div>
+						<div class="lbl">Consulta en línea</div>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</section>
+
+
+
+	<!-- Section 01: Program libraries -->
+	<section class="section">
+		<div class="container">
+			<SectionHeader
+				num="— 01"
+				title="Bibliotecas por programa."
+				description="No todos los programas cuentan aún con acervo digital. Los materiales viven en una colección única y se recuperan por la propiedad programa."
+			/>
+			<div class="lib-grid">
+				{activePrograms.map((prog, i) => (
+					<a href={`/biblioteca/${prog.slug}`} class="lib-card">
+						<div class="lib-card-top">
+							<span class="lib-idx">BIB · {String(i + 1).padStart(2, "0")}</span>
+							<span class="lib-pill">{prog.count ?? 0} títulos</span>
+						</div>
+						<h3 class="lib-name">{prog.label}</h3>
+						<div class="lib-meta">
+							<span>Licenciatura</span>
+							<span class="lib-arrow" aria-hidden="true">→</span>
+						</div>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<!-- Section 02: Recently added -->
+	<section class="section section--bright">
+		<div class="container">
+			<SectionHeader
+				num="— 02"
+				title="Añadidos recientemente."
+				description="Los ingresos más recientes al acervo, de todos los programas. Cada material está etiquetado con su programa de origen."
+			/>
+			<div class="book-grid">
+				{recentBooks.map((book) => (
+					<a href={book.href} target="_blank" rel="noopener noreferrer" class="book">
+						<div class="book-cover">
+							<span class="bc-prog">{book.prog}</span>
+							<div>
+								<div class="bc-title">{book.title}</div>
+								<div class="bc-author">{book.author}</div>
+							</div>
+						</div>
+						<div class="book-meta">
+							<div class="b-title">{book.title}</div>
+							<div class="b-author">{book.author}</div>
+							<div class="b-year">{book.year}</div>
+						</div>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+</Base>
+
+<style>
+/* ── Hero ── */
+.bib-hero {
+	background: var(--secondary);
+	color: #fff;
+	padding-block: var(--section-pad);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	position: relative;
+	overflow: hidden;
+}
+
+.bib-hero::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-image: repeating-linear-gradient(135deg, transparent 0 22px, rgba(255, 255, 255, 0.018) 22px 23px);
+	pointer-events: none;
+}
+
+.bib-hero .container {
+	position: relative;
+	z-index: 1;
+}
+
+.crumbs {
+	display: flex;
+	gap: 0.55rem;
+	align-items: center;
+	font-family: var(--mono);
+	font-size: 12px;
+	letter-spacing: 0.06em;
+	color: rgba(255, 255, 255, 0.55);
+	margin: 0 0 2.25rem;
+	padding: 0;
+	list-style: none;
+}
+
+.crumbs a {
+	color: rgba(255, 255, 255, 0.55);
+	text-decoration: none;
+}
+
+.crumbs a:hover {
+	color: #fff;
+}
+
+.crumbs .sep {
+	color: rgba(255, 255, 255, 0.3);
+}
+
+.crumbs .here {
+	color: var(--accent-warm);
+}
+
+.bib-em {
+	font-style: italic;
+	color: var(--accent-warm);
+	font-weight: 500;
+}
+
+.bib-stats {
+	border-left: 1px solid rgba(255, 255, 255, 0.18);
+	padding-left: 2.5rem;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 2rem 1.5rem;
+}
+
+.bib-stats .stat .num {
+	color: #fff;
+	font-size: 3rem;
+}
+
+.bib-stats .stat .lbl {
+	color: rgba(255, 255, 255, 0.55);
+}
+
+
+/* ── Library grid ── */
+.lib-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1px;
+	background: var(--outline-soft);
+	border: 1px solid var(--outline-soft);
+}
+
+.lib-card {
+	background: var(--surface-bright);
+	padding: 2rem 1.75rem 1.6rem;
+	display: flex;
+	flex-direction: column;
+	min-height: 260px;
+	transition: background 0.2s ease;
+	position: relative;
+	text-decoration: none;
+	color: inherit;
+}
+
+a.lib-card:hover {
+	background: var(--surface-low);
+}
+
+.lib-card-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 1.5rem;
+}
+
+.lib-idx {
+	font-family: var(--mono);
+	font-size: 12px;
+	color: var(--secondary-soft);
+	letter-spacing: 0.08em;
+}
+
+.lib-pill {
+	font-family: var(--sans);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--primary);
+	background: var(--primary-tint);
+	padding: 0.2rem 0.5rem;
+	border-radius: var(--radius-sm);
+}
+
+
+.lib-name {
+	margin: 0 0 auto;
+	font-family: var(--serif);
+	font-size: 1.5rem;
+	font-weight: 500;
+	color: var(--secondary);
+	line-height: 1.15;
+	letter-spacing: -0.005em;
+}
+
+
+
+.lib-meta {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 1.5rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--outline-soft);
+	font-family: var(--sans);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: var(--secondary-soft);
+}
+
+.lib-arrow {
+	color: var(--primary);
+	font-size: 0.9rem;
+}
+
+
+/* ── Recently added books ── */
+.book-grid {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 1.75rem;
+}
+
+.book {
+	display: flex;
+	flex-direction: column;
+	text-decoration: none;
+	color: inherit;
+}
+
+.book-cover {
+	aspect-ratio: 2/3;
+	background-color: var(--secondary);
+	background-image: repeating-linear-gradient(135deg, transparent 0 12px, rgba(255, 255, 255, 0.03) 12px 13px);
+	border: 1px solid var(--outline-soft);
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 1rem 0.9rem;
+	overflow: hidden;
+	transition: transform 0.18s ease;
+}
+
+.book:hover .book-cover {
+	transform: translateY(-4px);
+}
+
+.book-cover::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 5px;
+	background: var(--primary);
+}
+
+.bc-prog {
+	font-family: var(--sans);
+	font-size: 9px;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--accent-warm);
+}
+
+.bc-title {
+	font-family: var(--serif);
+	font-size: 0.95rem;
+	font-weight: 500;
+	color: #fff;
+	line-height: 1.2;
+}
+
+.bc-author {
+	font-family: var(--sans);
+	font-size: 0.625rem;
+	color: rgba(255, 255, 255, 0.6);
+	letter-spacing: 0.02em;
+	margin-top: 0.3rem;
+}
+
+.book-meta {
+	margin-top: 0.85rem;
+}
+
+.b-title {
+	font-family: var(--serif);
+	font-size: 0.9375rem;
+	font-weight: 600;
+	color: var(--secondary);
+	line-height: 1.25;
+}
+
+.b-author {
+	font-family: var(--sans);
+	font-size: 12px;
+	color: var(--tertiary);
+	margin-top: 0.2rem;
+}
+
+.b-year {
+	font-family: var(--mono);
+	font-size: 10px;
+	color: var(--secondary-soft);
+	letter-spacing: 0.04em;
+	margin-top: 0.5rem;
+}
+
+
+/* ── Responsive ── */
+@media (max-width: 980px) {
+	.bib-stats {
+		border-left: 0;
+		padding-left: 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.18);
+		padding-top: 2rem;
+	}
+
+	.lib-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.book-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+}
+
+@media (max-width: 620px) {
+	.lib-grid,
+	.book-grid {
+		grid-template-columns: 1fr;
+	}
+}
+</style>

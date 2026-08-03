@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 export interface AnnouncementModalProps {
   id: string
   title: string
+  description?: string | null
   ctaLabel?: string | null
   ctaHref?: string | null
   imageUrl?: string | null
@@ -11,7 +12,7 @@ export interface AnnouncementModalProps {
 
 const STORAGE_KEY = (id: string) => `announcement-dismissed-${id}`
 
-export function AnnouncementModal({ id, title, ctaLabel, ctaHref, imageUrl, imageAlt }: AnnouncementModalProps) {
+export function AnnouncementModal({ id, title, description, ctaLabel, ctaHref, imageUrl, imageAlt }: AnnouncementModalProps) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export function AnnouncementModal({ id, title, ctaLabel, ctaHref, imageUrl, imag
           />
         )}
         <p className="announcement-title">{title}</p>
+        {description && <p className="announcement-description">{description}</p>}
         {ctaLabel && ctaHref && (
           <a className="announcement-cta btn btn-primary" href={ctaHref} onClick={dismiss}>
             {ctaLabel} →
