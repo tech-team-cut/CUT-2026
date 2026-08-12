@@ -1,0 +1,517 @@
+{
+  "collections": [
+    {
+      "slug": "announcements",
+      "label": "Anuncios",
+      "labelSingular": "Anuncio",
+      "supports": [
+        "drafts"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Título",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "cta_label",
+          "label": "Texto del CTA",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "cta_href",
+          "label": "URL del CTA",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "start_date",
+          "label": "Fecha inicio",
+          "type": "datetime",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "end_date",
+          "label": "Fecha fin",
+          "type": "datetime",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "image",
+          "label": "Imagen",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "description",
+          "label": "Descripción",
+          "type": "text",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "aviso_destacado",
+      "label": "Aviso Destacado",
+      "labelSingular": "Aviso Destacado",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Título",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "kicker",
+          "label": "Kicker / Etiqueta",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "meta",
+          "label": "Descripción corta",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "cta_label",
+          "label": "Texto del CTA",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "cta_href",
+          "label": "URL del CTA",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "start_date",
+          "label": "Fecha",
+          "type": "datetime",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "books",
+      "label": "Libros",
+      "labelSingular": "Libro",
+      "supports": [
+        "drafts",
+        "search"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Título",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "author",
+          "label": "Autor",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "year",
+          "label": "Año",
+          "type": "integer",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "external_url",
+          "label": "Enlace (Google Drive)",
+          "type": "string",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "galeria_multimedia",
+      "label": "Galería Multimedia",
+      "labelSingular": "Elemento de Galería",
+      "supports": [
+        "drafts"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Título",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "image",
+          "label": "Imagen",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "video_url",
+          "label": "Video (URL directa)",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "youtube_url",
+          "label": "YouTube URL",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "caption",
+          "label": "Pie de foto/video",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "order",
+          "label": "Orden",
+          "type": "integer",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "library_collections",
+      "label": "Acervos Bibliotecarios",
+      "labelSingular": "Acervo",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Nombre del acervo",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "description",
+          "label": "Descripción",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Contenido",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "external_url",
+          "label": "URL externa",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "collection_type",
+          "label": "Tipo",
+          "type": "string",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "licenciaturas",
+      "label": "Licenciaturas",
+      "labelSingular": "Licenciatura",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Nombre del programa",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "order",
+          "label": "Orden",
+          "type": "integer",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "featured_image",
+          "label": "Imagen destacada",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "excerpt",
+          "label": "Descripción breve",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Contenido",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "duration",
+          "label": "Duración",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "modality",
+          "label": "Modalidad",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "degree_plan_url",
+          "label": "Plan de estudios (URL)",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "active",
+          "label": "Activo",
+          "type": "boolean",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "curriculum",
+          "label": "Plan de Estudios (JSON)",
+          "type": "json",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "icon",
+          "label": "Icono",
+          "type": "image",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "maestrias",
+      "label": "Maestrías",
+      "labelSingular": "Maestría",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Nombre del programa",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "featured_image",
+          "label": "Imagen destacada",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "excerpt",
+          "label": "Descripción breve",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Contenido",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "duration",
+          "label": "Duración",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "modality",
+          "label": "Modalidad",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "degree_plan_url",
+          "label": "Plan de estudios (URL)",
+          "type": "string",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "active",
+          "label": "Activo",
+          "type": "boolean",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "curriculum",
+          "label": "Plan de Estudios (JSON)",
+          "type": "json",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "characteristics",
+          "label": "Características (JSON)",
+          "type": "json",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "order",
+          "label": "Orden",
+          "type": "integer",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "icon",
+          "label": "Icono",
+          "type": "image",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "pages",
+      "label": "Páginas",
+      "labelSingular": "Página",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Título",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Contenido",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        }
+      ]
+    },
+    {
+      "slug": "posts",
+      "label": "Noticias",
+      "labelSingular": "Noticia",
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Título",
+          "type": "string",
+          "required": true,
+          "unique": false
+        },
+        {
+          "slug": "featured_image",
+          "label": "Imagen destacada",
+          "type": "image",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "excerpt",
+          "label": "Resumen",
+          "type": "text",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "content",
+          "label": "Contenido",
+          "type": "portableText",
+          "required": false,
+          "unique": false
+        },
+        {
+          "slug": "fecha_publicacion",
+          "label": "Fecha de publicación",
+          "type": "datetime",
+          "required": false,
+          "unique": false
+        }
+      ]
+    }
+  ],
+  "version": "3c9a7a10afa25666"
+}
